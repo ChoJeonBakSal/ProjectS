@@ -73,14 +73,17 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         // 캐릭터 이동 처리
-        Vector3 moveDirection = new Vector3(movement.x, 0, movement.y);
+        Vector3 moveDirection = new Vector3(movement.x, 0, movement.y).normalized;
         float currentSpeed = isRunning ? runSpeed : walkSpeed;
         characterController.Move(moveDirection * currentSpeed * Time.deltaTime);
 
         // 애니메이터 매개변수 업데이트
-        animator.SetFloat("Horizontal", movement.x);
-        animator.SetFloat("Vertical", movement.y);
-        animator.SetFloat("Speed", movement.sqrMagnitude);
+        float horizontal = Vector3.Dot(moveDirection, transform.right);
+        float vertical = Vector3.Dot(moveDirection, transform.forward);
+
+        animator.SetFloat("Horizontal", horizontal);
+        animator.SetFloat("Vertical", vertical);
+        animator.SetFloat("Speed", moveDirection.magnitude); // 이동 속도에 따라 설정
 
         // 캐릭터를 마우스 방향으로 회전
         RotateToMouse();
@@ -90,8 +93,8 @@ public class PlayerController : MonoBehaviour
     {
         if (lookDirection != Vector3.zero)
         {
-            Quaternion rotation = Quaternion.LookRotation(lookDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
     }
 }
