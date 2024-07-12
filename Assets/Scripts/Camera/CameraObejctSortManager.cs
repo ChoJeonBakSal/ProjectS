@@ -3,21 +3,23 @@ using UnityEngine.Rendering.Universal;
 
 public class CameraObejctSortManager : MonoBehaviour
 {
-    [SerializeField] private GameObject Player;
-    [SerializeField] private GameObject Player_Sub;
+    [SerializeField] private GameObject Human;
+    [SerializeField] private GameObject Wolf;
 
-    private Camera camera;
+    [SerializeField] private Camera camera;
     [SerializeField] private Camera Player_Camera;
     [SerializeField] private Camera Sub_Camera;
 
 
-    private void Start()
-    {
-        camera = Camera.main;
-    }
+    //private void OnEnable()
+    //{
+    //    camera = Camera.main;
+    //}
 
     private void Update()
     {
+        if(!gameObject.activeSelf) return;
+
         UpdateCameraStackOrder();
     }
 
@@ -38,17 +40,17 @@ public class CameraObejctSortManager : MonoBehaviour
 
     private void UpdateCameraStackOrder()
     {
-        float zPositionPlayer = Player.transform.position.z;
-        float zPositionPlayerSub = Player_Sub.transform.position.z;
+        float zPositionPlayer = Human.transform.position.z;
+        float zPositionPlayerSub = Wolf.transform.position.z;
 
         if (zPositionPlayer > zPositionPlayerSub)
         {
-            // Player°¡ ZÃà¿¡¼­ ´õ ³ôÀº À§Ä¡¿¡ ÀÖÀ¸¸é Player_Camera¸¦ ¾Õ¿¡ ¹èÄ¡
+            // Playerê°€ Zì¶•ì—ì„œ ë” ë†’ì€ ìœ„ì¹˜ì— ìˆìœ¼ë©´ Player_Cameraë¥¼ ì•ì— ë°°ì¹˜
             SetCameraStackOrder(Player_Camera, Sub_Camera);
         }
         else
         {
-            // Player_Sub°¡ ZÃà¿¡¼­ ´õ ³ôÀº À§Ä¡¿¡ ÀÖÀ¸¸é Sub_Camera¸¦ ¾Õ¿¡ ¹èÄ¡
+            // Player_Subê°€ Zì¶•ì—ì„œ ë” ë†’ì€ ìœ„ì¹˜ì— ìˆìœ¼ë©´ Sub_Cameraë¥¼ ì•ì— ë°°ì¹˜
             SetCameraStackOrder(Sub_Camera, Player_Camera);
         }
     }
@@ -57,7 +59,7 @@ public class CameraObejctSortManager : MonoBehaviour
         var baseCameraData = camera.GetUniversalAdditionalCameraData();
         if (baseCameraData != null)
         {
-            baseCameraData.cameraStack.Clear(); // ±âÁ¸ ½ºÅÃ ÃÊ±âÈ­
+            baseCameraData.cameraStack.Clear(); // ê¸°ì¡´ ìŠ¤íƒ ì´ˆê¸°í™”
             baseCameraData.cameraStack.Add(frontCamera);
             baseCameraData.cameraStack.Add(backCamera);
         }

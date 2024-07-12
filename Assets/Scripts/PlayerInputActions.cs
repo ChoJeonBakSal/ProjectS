@@ -53,6 +53,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PlayerChanged"",
+                    ""type"": ""Button"",
+                    ""id"": ""80a69e83-18d6-4dd0-b0d9-c93fb799ff71"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +141,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Run"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f7815dad-5a73-4ceb-b393-bcf081760710"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlayerChanged"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -155,6 +175,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
+        m_Player_PlayerChanged = m_Player.FindAction("PlayerChanged", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -219,6 +240,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Run;
+    private readonly InputAction m_Player_PlayerChanged;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -226,6 +248,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Run => m_Wrapper.m_Player_Run;
+        public InputAction @PlayerChanged => m_Wrapper.m_Player_PlayerChanged;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -244,6 +267,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Run.started += instance.OnRun;
             @Run.performed += instance.OnRun;
             @Run.canceled += instance.OnRun;
+            @PlayerChanged.started += instance.OnPlayerChanged;
+            @PlayerChanged.performed += instance.OnPlayerChanged;
+            @PlayerChanged.canceled += instance.OnPlayerChanged;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -257,6 +283,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Run.started -= instance.OnRun;
             @Run.performed -= instance.OnRun;
             @Run.canceled -= instance.OnRun;
+            @PlayerChanged.started -= instance.OnPlayerChanged;
+            @PlayerChanged.performed -= instance.OnPlayerChanged;
+            @PlayerChanged.canceled -= instance.OnPlayerChanged;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -288,5 +317,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
+        void OnPlayerChanged(InputAction.CallbackContext context);
     }
 }
