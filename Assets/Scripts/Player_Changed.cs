@@ -26,6 +26,8 @@ public class Player_Changed : MonoBehaviour
     {
         if(context.started)
         {
+            Debug.Log(GetInstanceID());
+
             AllChildTransformChangedLayer();
         }
     }
