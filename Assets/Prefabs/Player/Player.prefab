@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6544452213056130879}
   - component: {fileID: 3720325572880289662}
+  - component: {fileID: 1980077969029875846}
+  - component: {fileID: 2588732772896744166}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -55,6 +57,54 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1980077969029875846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5193328960340748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 815b2ccc66d09f54386863371974992b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swordColi: {fileID: 5726953944422197528}
+  targetLayer: 0
+  slowMotionDuration: 0.15
+  slowMotionFactor: 0.1
+  chosenEffect: {fileID: 1205235233878744, guid: 60440510747af69459c0fc4397318f4b, type: 3}
+  loopTimeLimit: 2
+  disableLights: 1
+  disableSound: 1
+  spawnScale: 1.5
+--- !u!54 &2588732772896744166
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5193328960340748}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 2
 --- !u!1 &207842668145934717
 GameObject:
   m_ObjectHideFlags: 0
@@ -1834,7 +1884,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
