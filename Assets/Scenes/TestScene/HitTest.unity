@@ -388,64 +388,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &519295035 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5193328960340748, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
-  m_PrefabInstance: {fileID: 601694029966980798}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &519295038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519295035}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 815b2ccc66d09f54386863371974992b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  swordColi: {fileID: 616387113}
-  targetLayer: 0
-  slowMotionDuration: 0.1
-  slowMotionFactor: 0.001
-  chosenEffect: {fileID: 1205235233878744, guid: 60440510747af69459c0fc4397318f4b, type: 3}
-  loopTimeLimit: 2
-  disableLights: 1
-  disableSound: 1
-  spawnScale: 1
---- !u!54 &519295039
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519295035}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 2
---- !u!65 &616387113 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: 5726953944422197528, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
-  m_PrefabInstance: {fileID: 601694029966980798}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1054542686
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -784,10 +726,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 5726953944422197528, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6544452213056130879, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -831,13 +769,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5193328960340748, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 519295038}
-    - targetCorrespondingSourceObject: {fileID: 5193328960340748, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 519295039}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
