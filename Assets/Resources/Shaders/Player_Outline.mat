@@ -38,8 +38,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _ColorThreshold: 2
-    - _NormalThrehold: 0.8
+    - _ColorThreshold: 10
+    - _NormalThrehold: 1
     - _OVERLAY: 1
     m_Colors:
     - _OutlineColor: {r: 0.003921747, g: 1, b: 0, a: 0}
