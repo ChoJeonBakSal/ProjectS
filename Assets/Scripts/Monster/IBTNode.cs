@@ -4,7 +4,7 @@ public interface IBTNode
     {
         Success,
         Fail,
-
+        running
     }
 
     public EBTNodeState Evaluate();

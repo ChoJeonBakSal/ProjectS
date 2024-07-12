@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class MonsterActionNode : MonoBehaviour
+public class MonsterActionNode : IBTNode
 {
     Func<IBTNode.EBTNodeState> _onUpdate = null;
 
@@ -12,4 +9,9 @@ public class MonsterActionNode : MonoBehaviour
         _onUpdate = onUpdate;
     }
 
+    public IBTNode.EBTNodeState Evaluate()
+    {
+        if(_onUpdate != null) return _onUpdate.Invoke();
+        else return IBTNode.EBTNodeState.Fail;
+    }
 }

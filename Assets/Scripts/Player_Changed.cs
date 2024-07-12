@@ -14,9 +14,6 @@ public class Player_Changed : MonoBehaviour
         if(context.started)
         {
             OnPlayerChange?.Invoke();
-
-            //Human.AllChildTransformChangedLayer();
-            //Wolf.AllChildTransformChangedLayer();
         }
     }
 
