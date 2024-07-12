@@ -7,23 +7,20 @@ public class IsPlayer : MonoBehaviour
     private static int PlayerLayer;
     private static int PlayerSubLayer;
 
-    public bool isPlayer;
-
+    public bool isPlayer { get; private set; }
     [SerializeField] private GameObject Camera;
 
     private void Awake()
     {
         PlayerLayer = LayerMask.NameToLayer("Player");
         PlayerSubLayer = LayerMask.NameToLayer("Player_Sub");
+
+        Player_Changed.OnPlayerChange += AllChildTransformChangedLayer;
     }
 
     private void Start()
     {
-        if (gameObject.layer == PlayerLayer)
-        {
-            isPlayer = true;
-        }
-
+        isPlayer = gameObject.layer == PlayerLayer;
         Camera.SetActive(isPlayer);
     }
 
