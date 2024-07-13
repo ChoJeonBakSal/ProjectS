@@ -13,10 +13,10 @@ using UnityEngine.InputSystem;
 public class SubPlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    [SerializeField] float maxRunSpeed = 5.0f;                     // 최대 뛰기 속도
-    [SerializeField] float minSpeed = 2.0f;                       // 최소 이동 속도
-    [SerializeField] float acceleration = 2.0f;                   // 가속도
-    [SerializeField] float deceleration = 5.0f;                   // 감속도
+    [SerializeField] float maxRunSpeed = 9f;                     // 최대 뛰기 속도
+    [SerializeField] float minSpeed = 4.5f;                       // 최소 이동 속도
+    [SerializeField] float acceleration = 1.5f;                   // 가속도
+    [SerializeField] float deceleration = 15f;                   // 감속도
     [SerializeField] private float currentSpeed = 0.0f;           // 현재 속도 (인스펙터에 노출)
 
     private Animator animator;                                    // 캐릭터 애니메이터
