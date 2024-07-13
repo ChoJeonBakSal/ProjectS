@@ -1,0 +1,34 @@
+{
+    "name": "Switch",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "8a6db30a-e8e5-47b6-805f-f9580c7e9bc5",
+            "actions": [
+                {
+                    "name": "PlayerChanged",
+                    "type": "Button",
+                    "id": "4f8f7620-4b1e-480b-be16-1e7488d0f14c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "809ef2e8-5bc6-4e92-a526-c229f548022f",
+                    "path": "<Keyboard>/c",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlayerChanged",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
