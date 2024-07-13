@@ -13,6 +13,8 @@ public class MonsterSequenceNode : IBTNode
         _currentChild = 0;
     }
 
+    //시퀀스 노드는 Reunning이면, 상태를 유지
+    //Success면 다음 자식으로 이동, Fail이면 Fail을 반환해야 한다.
     public IBTNode.EBTNodeState Evaluate()
     {
         if(_childList == null || _childList.Count == 0) return IBTNode.EBTNodeState.Fail;
