@@ -9,6 +9,7 @@ public class MonsterView : MonoBehaviour
     [SerializeField] private float MonsterAttackDelay;
     [SerializeField] private float MonsterPatrolDelayTimeAverage;
     [SerializeField] private float MonsterHP;
+    [SerializeField] private float MonsterATK;
 
     [SerializeField] Transform _findTarget;
     [SerializeField] LayerMask GroundLayer;
@@ -27,6 +28,7 @@ public class MonsterView : MonoBehaviour
 
     private float _timer = 0;
     private float _monsterPatrolDelay;
+    private bool isAttacking;
     private bool isHurt;
     private bool isDie;
 
@@ -40,8 +42,11 @@ public class MonsterView : MonoBehaviour
     private void OnEnable()
     {
         detectZone = GetComponentInChildren<MonsterDetectZone>();
+        isAttacking = false;
         isHurt = false;
         isDie = false;
+
+        agent.speed = 1.5f;
 
         if (detectZone!= null)
         {
@@ -67,6 +72,17 @@ public class MonsterView : MonoBehaviour
     private void Update()
     {
         _monsterBTRunner.Execute();
+
+        if(_findTarget != null)
+        {
+            Vector3 direction = (_findTarget.position - animator.transform.position).normalized;
+            direction.y = 0;
+            if (direction != Vector3.zero)
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * agent.angularSpeed);
+            }
+        }
     }
 
     IBTNode SetMonsterBT()
@@ -112,8 +128,9 @@ public class MonsterView : MonoBehaviour
     //타겟을 향해 이동
     private void MoveToTarget(Vector3 targetTransform)
     {
-        agent.SetDestination(targetTransform);
-        //플레이어가 해당 방향으로 rotation 하도록 설정
+        if (isAttacking || isHurt || isDie) return;
+
+        agent.SetDestination(targetTransform);        
     }
 
     //이동하며 타겟까지 남은 거리를 업데이트
@@ -133,6 +150,7 @@ public class MonsterView : MonoBehaviour
 
         //공격 애니메이션 실행
         animator.SetTrigger(HashAttack);
+        isAttacking = true;
         return IBTNode.EBTNodeState.Success;
     }
 
@@ -147,6 +165,7 @@ public class MonsterView : MonoBehaviour
         }
 
         //animator.CrossFade(HashAttack, MonsterAttackDelay);
+        isAttacking = false;
         return IBTNode.EBTNodeState.Success;
     }
 
