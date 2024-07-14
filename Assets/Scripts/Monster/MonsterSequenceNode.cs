@@ -25,8 +25,8 @@ public class MonsterSequenceNode : IBTNode
 
             switch(childState)
             {
-                case IBTNode.EBTNodeState.running:
-                    return IBTNode.EBTNodeState.running;
+                case IBTNode.EBTNodeState.Running:
+                    return IBTNode.EBTNodeState.Running;
                 case IBTNode.EBTNodeState.Success:
                     continue;
                 case IBTNode.EBTNodeState.Fail:
