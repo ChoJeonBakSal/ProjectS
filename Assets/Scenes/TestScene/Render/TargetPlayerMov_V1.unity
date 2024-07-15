@@ -2302,7 +2302,7 @@ MonoBehaviour:
   HumanInitHp: 100
   WolfInitHp: 150
   _currentHp: 0
-  targetObj: {fileID: 2150857938816968641}
+  target: {fileID: 6921165941836897086}
   followDistance: 2
 --- !u!1 &2233951898354913221
 GameObject:
@@ -6472,7 +6472,7 @@ MonoBehaviour:
   HumanInitHp: 100
   WolfInitHp: 150
   _currentHp: 0
-  targetObj: {fileID: 5652512305927646941}
+  target: {fileID: 2222355752419289003}
   followDistance: 2
 --- !u!4 &6939044910711628369
 Transform:
