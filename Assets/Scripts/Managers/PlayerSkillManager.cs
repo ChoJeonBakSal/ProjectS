@@ -6,7 +6,7 @@ public class PlayerSkillManager : MonoBehaviour
 {
     [Header("Player variable")]
     [SerializeField] private Animator p_Anim;
-    [SerializeField] private bool isCasting = false; // 애니메이션 실행중 재입력 불가
+    [SerializeField] public bool isCasting = false; // 애니메이션 실행중 재입력 불가
 
 
     [Header("Hit Effect")]
@@ -74,8 +74,9 @@ public class PlayerSkillManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        PlayerAttackManager pam = transform.GetComponent<PlayerAttackManager>();
         // 충돌한 객체의 레이어가 타겟 레이어인지 확인합니다.
-        if (other.gameObject.layer == targetLayer)
+        if (other.gameObject.layer == targetLayer && !pam.isAttacking)
         {
             Debug.Log("Monster Collider와 충돌 감지!");
 
@@ -154,12 +155,12 @@ public class PlayerSkillManager : MonoBehaviour
     // 스킬 애니메이션에서 참조
     void TriggerOn()
     {
-        skillCollider.enabled = true;
         StartCoroutine(OffTrigger());
     }
 
     IEnumerator OffTrigger()
     {
+        skillCollider.enabled = true;
         StartCoroutine(SkillEffectLoop());
         yield return new WaitForSeconds(0.1f);
         skillCollider.enabled = false;

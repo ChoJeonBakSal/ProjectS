@@ -6,7 +6,7 @@ public class PlayerAttackManager : MonoBehaviour
 {
     [Header("Player variable")]
     [SerializeField] private Animator p_Anim;
-    [SerializeField] private bool isAttacking = false; // 애니메이션 실행중 재입력 불가
+    [SerializeField] public bool isAttacking = false; // 애니메이션 실행중 재입력 불가
 
 
     [Header("Hit Effect")]
@@ -71,8 +71,9 @@ public class PlayerAttackManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        PlayerSkillManager psm = transform.GetComponent<PlayerSkillManager>();
         // 충돌한 객체의 레이어가 타겟 레이어인지 확인합니다.
-        if (other.gameObject.layer == targetLayer)
+        if (other.gameObject.layer == targetLayer && !psm.isCasting)
         {
             Debug.Log("Monster Collider와 충돌 감지!");
             
