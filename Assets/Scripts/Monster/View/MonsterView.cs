@@ -25,6 +25,7 @@ public class MonsterView : MonoBehaviour
     private readonly int HashAttack = Animator.StringToHash("Attack");
     private readonly int HashHurt = Animator.StringToHash("Hit");
     private readonly int HashDie = Animator.StringToHash("Die");
+    private readonly int HashMove = Animator.StringToHash("Move");
 
     private float _timer = 0;
     private float _monsterPatrolDelay;
@@ -80,7 +81,7 @@ public class MonsterView : MonoBehaviour
             if (direction != Vector3.zero)
             {
                 Quaternion lookRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * agent.angularSpeed);
+                transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
             }
         }
     }
@@ -143,12 +144,13 @@ public class MonsterView : MonoBehaviour
         if(distance > MonsterAttakRange)
         {
             agent.stoppingDistance = MonsterAttakRange;
-
+            animator.SetBool(HashMove, true);
             MoveToTarget(_findTarget.position);
             return IBTNode.EBTNodeState.Running;
         }
 
         //공격 애니메이션 실행
+        animator.SetBool(HashMove, false);
         animator.SetTrigger(HashAttack);
         isAttacking = true;
         return IBTNode.EBTNodeState.Success;
@@ -249,9 +251,11 @@ public class MonsterView : MonoBehaviour
 
         if(distance > 0.1f)
         {
+            animator.SetBool(HashMove, true);
             return IBTNode.EBTNodeState.Running;
         }
 
+        animator.SetBool(HashMove, false);
         return IBTNode.EBTNodeState.Success;
     }
     #endregion

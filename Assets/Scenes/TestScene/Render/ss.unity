@@ -959,6 +959,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster
       objectReference: {fileID: 0}
+    - target: {fileID: 5460620693772728333, guid: 82966112ae3a36c4aaaa0c016670dc53, type: 3}
+      propertyPath: m_Speed
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5460620693772728333, guid: 82966112ae3a36c4aaaa0c016670dc53, type: 3}
+      propertyPath: m_AngularSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 9143799087783734589, guid: 82966112ae3a36c4aaaa0c016670dc53, type: 3}
       propertyPath: m_Radius
       value: 500
