@@ -144,14 +144,23 @@ public class PlayerController : MonoBehaviour
     {
         if (!IsCurrentPlayerHuman)
         {
-            UpdateAnimatorParameters();
-            FollowTarget();
+            if(currentPlayerTag == "Human")
+            {
+                FollowHumanTarget();
+
+            }
+            else
+            {
+                FollowTarget();
+            }
+            
         }
         else
         {
             MoveCharacter();
-            UpdateAnimatorParameters();
         }
+            UpdateAnimatorParameters();
+
     }
 
     // 매 프레임 후반에 캐릭터 회전 처리
@@ -230,12 +239,13 @@ public class PlayerController : MonoBehaviour
     {
         CurrentHp -= damage;
     }
-    // 타겟 추적 및 거리 유지
+
+    #region Wolf
     private void FollowTarget()
     {
         Debug.Log(currentPlayerTag + " :: " + IsCurrentPlayerHuman);
 
-        if (target != null && !IsCurrentPlayerHuman)
+        if (target != null && currentPlayerTag == "Wolf")
         {
             Vector3 targetPosition = target.transform.position;
             Vector3 wolfPosition = transform.position;
@@ -301,7 +311,63 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Horizontal", 0);
         animator.SetFloat("Vertical", speedMultiplier);
     }
+    #endregion
 
+    #region Human
+    private void FollowHumanTarget()
+    {
+        if (target != null && currentPlayerTag == "Human")
+        {
+            Vector3 targetPosition = target.transform.position;
+            Vector3 humanPosition = transform.position;
+            float distance = Vector3.Distance(targetPosition, humanPosition);
 
+            // 플레이어의 이동 방향 벡터 계산
+            Vector3 moveDirection = (targetPosition - humanPosition).normalized;
+            Vector3 rightOffset = target.transform.right * followDistance * 3f; // 옆으로 더 큰 오프셋 적용
+            Vector3 forwardOffset = moveDirection * followDistance * 3f; // 플레이어 앞에 오프셋 적용
+
+            // 동반자를 플레이어의 왼쪽이나 오른쪽에 위치시키기 위한 오프셋 계산
+            Vector3 desiredPosition = targetPosition + rightOffset + forwardOffset; // 기본적으로 오른쪽으로 설정하고 앞쪽으로 약간 이동
+            if (Vector3.Dot(target.transform.right, humanPosition - targetPosition) < 0)
+            {
+                desiredPosition = targetPosition - rightOffset + forwardOffset; // 플레이어의 왼쪽에 위치하고 앞쪽으로 약간 이동
+            }
+
+            // 플레이어와 동반자 간의 거리가 일정 거리 이하로 줄어들지 않도록 설정
+            if (distance > followDistance)
+            {
+                navMeshAgent.SetDestination(desiredPosition);
+
+                // 속도 설정
+                navMeshAgent.speed = HumanrunSpeed;
+
+                // 애니메이터 파라미터 업데이트
+                UpdateHumanAnimatorParameters(moveDirection);
+            }
+            else
+            {
+                navMeshAgent.ResetPath(); // 타겟과 일정 거리를 유지하면 멈춤
+
+                // 애니메이터 파라미터 업데이트
+                UpdateHumanAnimatorParameters(Vector3.zero);
+            }
+
+            // 동반자의 회전을 네브메시 에이전트의 이동 방향에 맞추기
+            if (navMeshAgent.velocity.sqrMagnitude > Mathf.Epsilon)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(navMeshAgent.velocity.normalized);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            }
+        }
+    }
+    private void UpdateHumanAnimatorParameters(Vector3 moveDirection)
+    {
+        Vector3 localMove = transform.InverseTransformDirection(moveDirection);
+        animator.SetFloat("Horizontal", localMove.x);
+        animator.SetFloat("Vertical", localMove.z);
+    }
+
+    #endregion
 
 }

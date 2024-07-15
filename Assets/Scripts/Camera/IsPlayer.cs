@@ -28,6 +28,7 @@ public class IsPlayer : MonoBehaviour
     private void Start()
     {
         isPlayer = gameObject.layer == PlayerLayer;
+        Debug.Log(isPlayer);
         if (isPlayer != null) { _playerController.IsCurrentPlayerHuman = isPlayer; }
 
         /*  if (_playerController != null) _playerController.enabled = isPlayer;
