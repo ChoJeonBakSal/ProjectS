@@ -13,7 +13,6 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    [SerializeField] float walkSpeed = 2.0f;                    // 걷기 속도 
     [SerializeField] float runSpeed = 5.0f;                     // 뛰기 속도
 
     private Animator animator;                                  // 캐릭터 애니메이터
@@ -118,7 +117,7 @@ public class PlayerController : MonoBehaviour
     private void MoveCharacter()
     {
         Vector3 moveDirection = new Vector3(movement.x, 0, movement.y).normalized;
-        float currentSpeed = isRunning ? runSpeed : walkSpeed;
+        float currentSpeed = runSpeed;
         characterController.Move(moveDirection * currentSpeed * Time.deltaTime);
     }
 
