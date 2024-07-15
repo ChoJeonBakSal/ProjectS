@@ -9718,7 +9718,7 @@ GameObject:
   - component: {fileID: 198329362025388576}
   - component: {fileID: 199858361950699946}
   m_Layer: 0
-  m_Name: FX_Groundexplosion
+  m_Name: FX_Groundexplosion 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

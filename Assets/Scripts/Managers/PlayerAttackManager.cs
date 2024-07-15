@@ -26,6 +26,7 @@ public class PlayerAttackManager : MonoBehaviour
 
     [Header("Sword Effect Timing")]
     [SerializeField] private GameObject swordEffect;
+    [SerializeField] private GameObject swordTrailEffect;
     private Quaternion additionalRotation = Quaternion.Euler(90, 0, -90);
     [SerializeField] private float swordLoopTimeLimit = 2.0f;
     [SerializeField] private float swordEffectDelayTime = 1.0f;
@@ -43,6 +44,8 @@ public class PlayerAttackManager : MonoBehaviour
 
         // 임시적으로 검 콜라이더 끄기.
         swordColi.enabled = false;
+
+        swordTrailEffect.SetActive(false);
     }
 
     private void Update()
@@ -57,10 +60,10 @@ public class PlayerAttackManager : MonoBehaviour
     {
         isAttacking = true;  // 애니메이션 시작 시 공격 상태로 전환
 
-        swordColi.enabled = true;
-
         // 공격 애니메이션 트리거 실행
         p_Anim.SetTrigger("BasicAtk");
+
+        swordColi.enabled = true;
 
         StartCoroutine(SwordEffectLoop());
         
@@ -89,32 +92,38 @@ public class PlayerAttackManager : MonoBehaviour
 
     IEnumerator SwordEffectLoop()
     {
-        Quaternion combinedRotation = transform.rotation * additionalRotation;
-        Vector3 newPosition = transform.position + new Vector3(0, 1, 0);
+        //Quaternion combinedRotation = transform.rotation * additionalRotation;
+        //Vector3 newPosition = transform.position + new Vector3(0, 1, 0);
 
-        yield return new WaitForSeconds(swordEffectDelayTime);
+        //yield return new WaitForSeconds(swordEffectDelayTime);
 
-        GameObject effectPlayer = (GameObject)Instantiate(swordEffect, newPosition, combinedRotation);
+        //GameObject effectPlayer = (GameObject)Instantiate(swordEffect, newPosition, combinedRotation);
 
-        effectPlayer.transform.localScale = new Vector3(swordSpawnScale, swordSpawnScale, swordSpawnScale);
+        //effectPlayer.transform.localScale = new Vector3(swordSpawnScale, swordSpawnScale, swordSpawnScale);
 
-        if (disableLights && effectPlayer.GetComponent<Light>())
-        {
-            effectPlayer.GetComponent<Light>().enabled = false;
-        }
+        //if (disableLights && effectPlayer.GetComponent<Light>())
+        //{
+        //    effectPlayer.GetComponent<Light>().enabled = false;
+        //}
+        //
+        //if (disableSound && effectPlayer.GetComponent<AudioSource>())
+        //{
+        //    effectPlayer.GetComponent<AudioSource>().enabled = false;
+        //}
 
-        if (disableSound && effectPlayer.GetComponent<AudioSource>())
-        {
-            effectPlayer.GetComponent<AudioSource>().enabled = false;
-        }
+        //yield return new WaitForSeconds(swordLoopTimeLimit);
+
+        //Destroy(effectPlayer);
+
+        swordTrailEffect.SetActive(true);
 
         yield return new WaitForSeconds(swordLoopTimeLimit);
-
-        Destroy(effectPlayer);
 
         swordColi.enabled = false;
 
         isAttacking = false;  // 공격 애니메이션이 끝난 후 공격 상태 해제
+
+        swordTrailEffect.SetActive(false);
     }
 
     IEnumerator HitEffectLoop(Collider other)
