@@ -1,32 +1,50 @@
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
-
-/* [ Memo ]
-  //0712
-  - 플레이어가 바라보는 방향은 마우스 포인터로 설정
-  - 8방향 애니메이션 적용 기본, 걷기, 뛰기
-  - 걷기 ASDW 뛰기 Shift
-  - Blend Tree 사용
-  - 조작 시 카메라 필요
- */
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement Settings")]
-    [SerializeField] float runSpeed = 5.0f;                     // 뛰기 속도
+    [Header("Human Set")] // 휴먼                                  모든 값은 임의 설정
+    [SerializeField] float HumanrunSpeed = 5.0f;                   // 뛰기 속도
 
-    private Animator animator;                                  // 캐릭터 애니메이터
-    private CharacterController characterController;            // 캐릭터 컨트롤러
-    private PlayerInputActions playerInputActions;              // 입력 시스템 액션
+    [Header("Wolf Set")]  // 울프
+    [SerializeField] float maxRunSpeed = 9f;                       // 최대 뛰기 속도
+    [SerializeField] float minSpeed = 4.5f;                        // 최소 이동 속도
+    [SerializeField] float acceleration = 1.5f;                    // 가속도
+    [SerializeField] float deceleration = 15f;                     // 감속도
+    [SerializeField] private float currentSpeed = 0.0f;            // 현재 속도 (인스펙터에 노출)
 
-    private Vector2 movement;                                   // 이동 입력 값
-    private Vector3 lookDirection;                              // 마우스 위치 기반 회전 방향
-    private bool isRunning;                                     // 달리기 상태
+    [Header("Common Set")] // 공통 
+    private Animator animator;                                     // 캐릭터 애니메이터
+    private NavMeshAgent navMeshAgent;                             // 네브메쉬 에이전트
+    private PlayerInputActions playerInputActions;                 // 입력 시스템 액션
+    private bool isMoving = false;                                 // 이동 중 여부
+    private Vector2 movement;                                      // 이동 입력 값
+    private Vector3 lookDirection;                                 // 마우스 위치 기반 회전 방향
+    private string currentPlayerTag;
+    public float HumanInitHp = 100f; // 휴먼 초기 체력
+    public float WolfInitHp = 150f; // 울프 초기 체력
+    [SerializeField]private float _currentHp;
+    public float InitHp { get; private set; }
+    public float CurrentHp
+    {
+        get { return _currentHp; }
+        private set
+        {
+            _currentHp = Mathf.Max(0, value); // 0 이하로 떨어지지 않도록 설정
+            if (_currentHp == 0)
+            {
+                Debug.Log($"{currentPlayerTag} character is dead.");
+            }
+        }
+    }
 
     private void Awake()
     {
         InitializeComponents();
         InitializeInputActions();
+        InitializeSetPlayerTag();
+        InitializeSetPlayerHp();
     }
 
     private void OnEnable()
@@ -43,7 +61,8 @@ public class PlayerController : MonoBehaviour
     private void InitializeComponents()
     {
         animator = GetComponent<Animator>();
-        characterController = GetComponent<CharacterController>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.updateRotation = false; // 네브메쉬 에이전트가 자동으로 회전하지 않도록 설정
     }
 
     // 입력 액션 초기화
@@ -52,6 +71,23 @@ public class PlayerController : MonoBehaviour
         playerInputActions = new PlayerInputActions();
     }
 
+    // 메인 플레이어인지 서브플레이어인지 찾아서 초기화
+    private void InitializeSetPlayerTag()
+    {
+        currentPlayerTag = this.gameObject.CompareTag("Player") ? "Human" : "Wolf";
+    }
+    private void InitializeSetPlayerHp()
+    {
+        if (currentPlayerTag == "Human")
+        {
+            InitHp = HumanInitHp;
+        }
+        else if (currentPlayerTag == "Wolf")
+        {
+            InitHp = WolfInitHp;
+        }
+        CurrentHp = InitHp;
+    }
     // 입력 액션 활성화
     private void EnableInputActions()
     {
@@ -59,8 +95,6 @@ public class PlayerController : MonoBehaviour
         playerInputActions.Player.Move.canceled += OnMove;
         playerInputActions.Player.Look.performed += OnLook;
         playerInputActions.Player.Look.canceled += OnLook;
-        playerInputActions.Player.Run.performed += OnRun;
-        playerInputActions.Player.Run.canceled += OnRun;
         playerInputActions.Enable();
     }
 
@@ -71,8 +105,6 @@ public class PlayerController : MonoBehaviour
         playerInputActions.Player.Move.canceled -= OnMove;
         playerInputActions.Player.Look.performed -= OnLook;
         playerInputActions.Player.Look.canceled -= OnLook;
-        playerInputActions.Player.Run.performed -= OnRun;
-        playerInputActions.Player.Run.canceled -= OnRun;
         playerInputActions.Disable();
     }
 
@@ -80,6 +112,10 @@ public class PlayerController : MonoBehaviour
     private void OnMove(InputAction.CallbackContext context)
     {
         movement = context.ReadValue<Vector2>();
+        if (currentPlayerTag != null && currentPlayerTag == "Wolf")
+        {
+            isMoving = context.phase == InputActionPhase.Performed;
+        } 
     }
 
     // 마우스 위치 입력 처리
@@ -92,12 +128,6 @@ public class PlayerController : MonoBehaviour
             lookDirection = hitInfo.point - transform.position;
             lookDirection.y = 0; // Y축 회전 방지
         }
-    }
-
-    // 달리기 입력 처리
-    private void OnRun(InputAction.CallbackContext context)
-    {
-        isRunning = context.ReadValueAsButton();
     }
 
     // 매 프레임마다 이동 및 애니메이터 업데이트
@@ -117,8 +147,31 @@ public class PlayerController : MonoBehaviour
     private void MoveCharacter()
     {
         Vector3 moveDirection = new Vector3(movement.x, 0, movement.y).normalized;
-        float currentSpeed = runSpeed;
-        characterController.Move(moveDirection * currentSpeed * Time.deltaTime);
+
+        if (currentPlayerTag == "Human") // Human
+        {
+            float currentSpeed = HumanrunSpeed;
+            navMeshAgent.speed = currentSpeed;
+            navMeshAgent.Move(moveDirection * currentSpeed * Time.deltaTime);
+        }
+        else // Wolf
+        {
+            if (isMoving)
+            {
+                // 가속도에 따라 속도 증가, 최소 속도 이상으로 설정
+                currentSpeed += acceleration * Time.deltaTime;
+                currentSpeed = Mathf.Clamp(currentSpeed, minSpeed, maxRunSpeed); // 최소 및 최대 속도 제한
+            }
+            else
+            {
+                // 감속도에 따라 속도 감소
+                currentSpeed -= deceleration * Time.deltaTime;
+                currentSpeed = Mathf.Max(currentSpeed, 0.0f); // 최소 속도 제한
+            }
+
+            navMeshAgent.speed = currentSpeed;
+            navMeshAgent.Move(moveDirection * currentSpeed * Time.deltaTime);
+        }
     }
 
     // 애니메이터 파라미터 업데이트
@@ -127,7 +180,16 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = new Vector3(movement.x, 0, movement.y).normalized;
         Vector3 localMove = transform.InverseTransformDirection(moveDirection);
 
-        float speedMultiplier = isRunning ? 2 : 1;
+        float speedMultiplier;
+
+        if (currentPlayerTag == "Human")
+        {
+            speedMultiplier = 1;
+        }
+        else
+        {
+            speedMultiplier = currentSpeed / maxRunSpeed; // 현재 속도 비율
+        }
 
         animator.SetFloat("Horizontal", localMove.x * speedMultiplier);
         animator.SetFloat("Vertical", localMove.z * speedMultiplier);
@@ -141,5 +203,10 @@ public class PlayerController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
         }
+    }
+
+    private void HitDamage(float damage) // 때리는 곳에서 호출하면 됨.
+    {
+        CurrentHp -= damage;
     }
 }
