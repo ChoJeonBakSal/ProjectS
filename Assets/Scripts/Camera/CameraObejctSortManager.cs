@@ -54,6 +54,7 @@ public class CameraObejctSortManager : MonoBehaviour
             SetCameraStackOrder(Sub_Camera, Player_Camera);
         }
     }
+
     private void SetCameraStackOrder(Camera frontCamera, Camera backCamera)
     {
         var baseCameraData = camera.GetUniversalAdditionalCameraData();
