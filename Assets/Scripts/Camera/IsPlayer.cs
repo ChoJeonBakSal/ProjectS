@@ -22,13 +22,15 @@ public class IsPlayer : MonoBehaviour
         PlayerSubLayer = LayerMask.NameToLayer("Player_Sub");
 
         Player_Changed.OnPlayerChange += AllChildTransformChangedLayer;
+
     }
 
     private void Start()
     {
         isPlayer = gameObject.layer == PlayerLayer;
+        if (isPlayer != null && isPlayer) { _playerController.IsCurrentPlayerHuman = true; }
 
-        if(_playerController != null) _playerController.enabled = isPlayer;
+        if (_playerController != null) _playerController.enabled = isPlayer;
         else _subPlayerController.enabled = isPlayer;
 
         Camera.SetActive(isPlayer);
@@ -37,7 +39,7 @@ public class IsPlayer : MonoBehaviour
     public void AllChildTransformChangedLayer()
     {
         isPlayer = gameObject.layer == PlayerLayer? false : true;
-
+        if(isPlayer != null && isPlayer) { _playerController.IsCurrentPlayerHuman = true; }
         if (_playerController != null) _playerController.enabled = isPlayer;
         else _subPlayerController.enabled = isPlayer;
 

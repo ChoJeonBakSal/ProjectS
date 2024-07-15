@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Human Set")] // 휴먼                                  모든 값은 임의 설정
+    [Header("Human Set")] // 휴먼                              [ 모든 값은 임의 설정 ]
     [SerializeField] float HumanrunSpeed = 5.0f;                   // 뛰기 속도
 
     [Header("Wolf Set")]  // 울프
@@ -14,17 +14,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float deceleration = 15f;                     // 감속도
     [SerializeField] private float currentSpeed = 0.0f;            // 현재 속도 (인스펙터에 노출)
 
-    [Header("Common Set")] // 공통 
-    private Animator animator;                                     // 캐릭터 애니메이터
+    [Header("Common Set")] // 공통
+
+    private Animator animator;                                     // 캐릭터 애니메이터    
     private NavMeshAgent navMeshAgent;                             // 네브메쉬 에이전트
     private PlayerInputActions playerInputActions;                 // 입력 시스템 액션
     private bool isMoving = false;                                 // 이동 중 여부
     private Vector2 movement;                                      // 이동 입력 값
     private Vector3 lookDirection;                                 // 마우스 위치 기반 회전 방향
     private string currentPlayerTag;
-    public float HumanInitHp = 100f; // 휴먼 초기 체력
-    public float WolfInitHp = 150f; // 울프 초기 체력
+    public float HumanInitHp = 100f;                               // 휴먼 초기 체력
+    public float WolfInitHp = 150f;                                // 울프 초기 체력
     [SerializeField]private float _currentHp;
+    public bool IsCurrentPlayerHuman { get; set; }                 // 현재 조작 중인 플레이어가 휴먼인지 여부
+    public GameObject targetObj;
+    public float followDistance = 2.0f;                            // 타겟과 유지할 거리
+
     public float InitHp { get; private set; }
     public float CurrentHp
     {
@@ -135,6 +140,7 @@ public class PlayerController : MonoBehaviour
     {
         MoveCharacter();
         UpdateAnimatorParameters();
+        FollowTarget();
     }
 
     // 매 프레임 후반에 캐릭터 회전 처리
@@ -208,5 +214,23 @@ public class PlayerController : MonoBehaviour
     private void HitDamage(float damage) // 때리는 곳에서 호출하면 됨.
     {
         CurrentHp -= damage;
+    }
+    // 타겟 추적 및 거리 유지
+    private void FollowTarget()
+    {
+        Debug.Log(currentPlayerTag + " :: " + IsCurrentPlayerHuman);
+
+        if (targetObj != null && !IsCurrentPlayerHuman)
+        {
+            float distance = Vector3.Distance(targetObj.transform.position, transform.position);
+            if (distance > followDistance)
+            {
+                navMeshAgent.SetDestination(targetObj.transform.position);
+            }
+            else
+            {
+                navMeshAgent.ResetPath(); // 타겟과 일정 거리를 유지하면 멈춤
+            }
+        }
     }
 }
