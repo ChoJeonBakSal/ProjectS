@@ -11,10 +11,12 @@ public class IsPlayer : MonoBehaviour
     [SerializeField] private GameObject Camera;
 
     private PlayerController _playerController;
+    private SubPlayerController _subPlayerController;
 
     private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
+        _subPlayerController = GetComponent<SubPlayerController>();
 
         PlayerLayer = LayerMask.NameToLayer("Player");
         PlayerSubLayer = LayerMask.NameToLayer("Player_Sub");
@@ -25,14 +27,19 @@ public class IsPlayer : MonoBehaviour
     private void Start()
     {
         isPlayer = gameObject.layer == PlayerLayer;
-        _playerController.enabled = isPlayer;
+
+        if(_playerController != null) _playerController.enabled = isPlayer;
+        else _subPlayerController.enabled = isPlayer;
+
         Camera.SetActive(isPlayer);
     }
 
     public void AllChildTransformChangedLayer()
     {
         isPlayer = gameObject.layer == PlayerLayer? false : true;
-        _playerController.enabled = isPlayer;
+
+        if (_playerController != null) _playerController.enabled = isPlayer;
+        else _subPlayerController.enabled = isPlayer;
 
         Camera.SetActive(isPlayer);
         gameObject.layer = gameObject.layer == PlayerLayer ? PlayerSubLayer : PlayerLayer;

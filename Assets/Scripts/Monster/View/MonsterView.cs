@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using Unity.VisualScripting;
 
 public class MonsterView : MonoBehaviour
 {
@@ -23,7 +25,7 @@ public class MonsterView : MonoBehaviour
     private Vector3 PatrolPoint;
 
     private readonly int HashAttack = Animator.StringToHash("Attack");
-    private readonly int HashHurt = Animator.StringToHash("Hit");
+    private readonly int HashHurt = Animator.StringToHash("Hurt");
     private readonly int HashDie = Animator.StringToHash("Die");
     private readonly int HashMove = Animator.StringToHash("Move");
 
@@ -32,6 +34,8 @@ public class MonsterView : MonoBehaviour
     private bool isAttacking;
     private bool isHurt;
     private bool isDie;
+    private bool isDead;
+    private bool isDestroy;
 
     private void Awake()
     {
@@ -46,6 +50,8 @@ public class MonsterView : MonoBehaviour
         isAttacking = false;
         isHurt = false;
         isDie = false;
+        isDead = false;
+        isDestroy = false;
 
         agent.speed = 1.5f;
 
@@ -74,7 +80,7 @@ public class MonsterView : MonoBehaviour
     {
         _monsterBTRunner.Execute();
 
-        if(_findTarget != null)
+        if(_findTarget != null && (!isDead || !isDie))
         {
             Vector3 direction = (_findTarget.position - animator.transform.position).normalized;
             direction.y = 0;
@@ -161,7 +167,7 @@ public class MonsterView : MonoBehaviour
     {
         if (isDie || isHurt) return IBTNode.EBTNodeState.Fail;
 
-        if (IsAnimationRunning(HashAttack))
+        if (IsAnimationRunning("Attack"))
         {
             return IBTNode.EBTNodeState.Running;
         }
@@ -171,15 +177,17 @@ public class MonsterView : MonoBehaviour
         return IBTNode.EBTNodeState.Success;
     }
 
-    private bool IsAnimationRunning(int animationHash)
+    private bool IsAnimationRunning(string animationName)
     {
         if(animator == null) return false;
 
         bool isRunning = false;
-        if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash.Equals(animationHash))
+        var aaa = animator.GetCurrentAnimatorStateInfo(0);
+
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName(animationName))
         {
             float normalizedTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            isRunning = normalizedTime != 0 && normalizedTime < 1.0f;
+            isRunning = normalizedTime >= 0 && normalizedTime < 1.0f;
         }
 
         return isRunning;
@@ -260,7 +268,7 @@ public class MonsterView : MonoBehaviour
     }
     #endregion
     #region Hurt
-    public void HurtDamage(float damage)
+    public void HurtDamage(float damage, Transform attacker)
     {
         MonsterHP -= damage;
 
@@ -271,7 +279,7 @@ public class MonsterView : MonoBehaviour
         else
         {
             isHurt = true;
-            animator.SetTrigger(HashHurt);
+            _findTarget = attacker;            
         }
     }
 
@@ -282,7 +290,15 @@ public class MonsterView : MonoBehaviour
         if (isHurt)
         {
             animator.SetTrigger(HashHurt);
-            return IBTNode.EBTNodeState.Success;
+
+            if(animator.GetCurrentAnimatorStateInfo(0).IsName("Hurt"))
+            {
+                return IBTNode.EBTNodeState.Success;
+            }
+            else
+            {
+                return IBTNode.EBTNodeState.Running;
+            }
         }
 
         return IBTNode.EBTNodeState.Fail;
@@ -291,23 +307,29 @@ public class MonsterView : MonoBehaviour
     public IBTNode.EBTNodeState CheckRunningHurtAnimationOnUpdate()
     {
         if (isDie) return IBTNode.EBTNodeState.Fail;
+        if (!isHurt) return IBTNode.EBTNodeState.Fail;
 
-        if (IsAnimationRunning(HashHurt))
+        if (IsAnimationRunning("Hurt"))
         {
+            Debug.Log("Hurt ½ÇÇà Áß...");
+            agent.speed = 0;
             return IBTNode.EBTNodeState.Running;
         }
 
         isHurt = false;
+        agent.speed = 1.5f;
         return IBTNode.EBTNodeState.Success;
     }
     #endregion
     #region Die
     public IBTNode.EBTNodeState CheckHPZeroOnUpdate()
     {
+        if (isDead) return IBTNode.EBTNodeState.Success;
+
         if(isDie)
         {
             animator.SetTrigger(HashDie);
-            return IBTNode.EBTNodeState.Success;
+            isDead = true; 
         }
 
         return IBTNode.EBTNodeState.Fail;
@@ -315,13 +337,31 @@ public class MonsterView : MonoBehaviour
 
     public IBTNode.EBTNodeState CheckRunningDieAnimationOnUpdate()
     {
-        if (IsAnimationRunning(HashDie))
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Die"))
         {
-            return IBTNode.EBTNodeState.Running;
-        }
+            if (IsAnimationRunning("Die"))
+            {
+                return IBTNode.EBTNodeState.Running;
+            }
 
-        Destroy(gameObject);
-        return IBTNode.EBTNodeState.Success;
+            //Destroy(gameObject);
+            Debug.Log("End");
+            StartCoroutine(DeadMonsterDestroy());
+
+            return IBTNode.EBTNodeState.Success;
+        }
+        else
+        return IBTNode.EBTNodeState.Running;
     }
-    #endregion
+    #endregion   
+    IEnumerator DeadMonsterDestroy()
+    {
+        if(isDestroy) yield break;
+
+        isDestroy = true;
+        yield return new WaitForSeconds(2f);
+        Destroy(gameObject);
+        isDestroy = false;
+        yield break;
+    }
 }

@@ -72,8 +72,11 @@ public class PlayerAttackManager : MonoBehaviour
         if (other.gameObject.layer == targetLayer)
         {
             Debug.Log("Monster Collider와 충돌 감지!");
-            
+
             // 여기서 충돌 처리를 합니다.
+            MonsterView hitMonster = other.GetComponent<MonsterView>();
+            hitMonster.HurtDamage(150, transform);
+
             StartCoroutine(HitEffectLoop(other));
             StartCoroutine(SlowMotionEffect());
         }
