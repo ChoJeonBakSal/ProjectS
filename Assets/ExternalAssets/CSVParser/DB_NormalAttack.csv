@@ -1,0 +1,4 @@
+ID,Description,DamagePercent,Animation,SocketCall,CollisionCall,SpecialMoveGaugeCharge,SpecialMoveGaugeCharge
+800,검사의 일반공격. 전방에 대한 범위공격,100,anim_swordman_norm_attack,socket_swordman_sword_norm_attack,col_greatswordman_normal attack,4,12
+801,늑대의 일반공격. 전방에 대한 범위공격,100,anim_wolf_norm_attack,socket_wolf_head_norm_attack,col_greatswordman_normal attack,2,6
+850,에너미1(스켈레톤)의 일반공격. 전방에 대한 범위공격,100,anim_skeleton_norm_attack,socket_skeleton_norm_attack,col_skeleton_norm_attack,,
