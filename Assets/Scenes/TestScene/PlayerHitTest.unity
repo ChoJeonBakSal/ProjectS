@@ -1271,6 +1271,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 5193328960340748, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1980077969029875846, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
       propertyPath: swordTrailEffect
       value: 
@@ -1281,7 +1285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6544452213056130879, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.24
       objectReference: {fileID: 0}
     - target: {fileID: 6544452213056130879, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1289,7 +1293,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6544452213056130879, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.48
       objectReference: {fileID: 0}
     - target: {fileID: 6544452213056130879, guid: aae3d25cb0279b4498b99b4685afb7bf, type: 3}
       propertyPath: m_LocalRotation.w
