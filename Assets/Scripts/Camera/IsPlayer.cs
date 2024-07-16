@@ -22,24 +22,27 @@ public class IsPlayer : MonoBehaviour
         PlayerSubLayer = LayerMask.NameToLayer("Player_Sub");
 
         Player_Changed.OnPlayerChange += AllChildTransformChangedLayer;
+
     }
 
     private void Start()
     {
         isPlayer = gameObject.layer == PlayerLayer;
+        Debug.Log(isPlayer);
+        if (isPlayer != null) { _playerController.IsCurrentPlayerHuman = isPlayer; }
 
-        if(_playerController != null) _playerController.enabled = isPlayer;
-        else _subPlayerController.enabled = isPlayer;
-
+        /*  if (_playerController != null) _playerController.enabled = isPlayer;
+          else _subPlayerController.enabled = isPlayer;
+  */
         Camera.SetActive(isPlayer);
     }
 
     public void AllChildTransformChangedLayer()
     {
-        isPlayer = gameObject.layer == PlayerLayer? false : true;
-
-        if (_playerController != null) _playerController.enabled = isPlayer;
-        else _subPlayerController.enabled = isPlayer;
+        isPlayer = gameObject.layer == PlayerLayer ? false : true;
+        if (isPlayer != null) { _playerController.IsCurrentPlayerHuman = isPlayer; }
+        /*      if (_playerController != null) _playerController.enabled = isPlayer;
+              else _subPlayerController.enabled = isPlayer;*/
 
         Camera.SetActive(isPlayer);
         gameObject.layer = gameObject.layer == PlayerLayer ? PlayerSubLayer : PlayerLayer;
