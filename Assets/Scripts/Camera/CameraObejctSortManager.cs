@@ -10,12 +10,6 @@ public class CameraObejctSortManager : MonoBehaviour
     [SerializeField] private Camera Player_Camera;
     [SerializeField] private Camera Sub_Camera;
 
-
-    //private void OnEnable()
-    //{
-    //    camera = Camera.main;
-    //}
-
     private void Update()
     {
         if(!gameObject.activeSelf) return;
