@@ -1,0 +1,13 @@
+GlobalID,CategoryID,CategoryName,TypeID,TypeName,SizeX,SizeY,SerialID,EquipCategory
+0,0,Weapon,0,Crystal Sword,2,3,0,Weapon
+1,1,Offhand,0,Shield,2,4,1,Shield
+2,2,Armour,0,Crown,2,2,2,Helmet
+3,2,Armour,1,Gloves,2,2,3,Glove
+4,2,Armour,2,Boots,2,2,4,Boot
+5,2,Armour,3,BodyArmour,2,3,5,Armor
+6,3,Accessory,0,Ring,1,1,6,Ring
+7,3,Accessory,1,Ring2,1,1,7,Ring
+8,3,Accessory,2,Belt,2,1,8,Belt
+9,3,Accessory,3,Amulet,1,1,9,Amulet
+10,4,Potion,0,LifePotion,1,1,10,All
+11,4,Potion,1,ManaPotion,1,1,11,All
