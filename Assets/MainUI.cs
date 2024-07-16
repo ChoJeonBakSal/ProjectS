@@ -15,7 +15,11 @@ public class MainUI : MonoBehaviour
     public float _crtHpWolf;
     public Image BarHpWolf;
 
-    public void SetInitialValues(float humanHp, float wolfHp)
+    private float MaxSkillGauge = 100;
+    public float _crtSkillGauge;
+    public Image BarSkillGauge;
+
+    public void SetInitialValues(float humanHp, float wolfHp, float crtUltimate)
     {
         // Human Set
         MaxHpHuman = humanHp;
@@ -24,11 +28,25 @@ public class MainUI : MonoBehaviour
         // Wolf Set
         MaxHpWolf = wolfHp;
         _crtHpWolf = MaxHpWolf;
-    }
 
+        //Skill Set
+        _crtSkillGauge = crtUltimate;
+    }
+ 
     void Update()
     {
         BarHpHuman.fillAmount = _crtHpHuman / MaxHpHuman;
         BarHpWolf.fillAmount = _crtHpWolf / MaxHpWolf;
+        BarSkillGauge.fillAmount = _crtSkillGauge / MaxSkillGauge;
+
+
+    }
+    public void AddSkillGauge(float amount)
+    {
+        _crtSkillGauge += amount;
+        if (_crtSkillGauge > MaxSkillGauge)
+        {
+            _crtSkillGauge = MaxSkillGauge;
+        }
     }
 }

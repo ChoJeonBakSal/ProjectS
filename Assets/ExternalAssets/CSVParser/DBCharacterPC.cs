@@ -43,6 +43,7 @@ public class DBCharacterPC : MonoBehaviour
         get { return _wolfHp; }
         set { _wolfHp = value; }
     }
+ 
     #endregion
     void Awake()
     {
@@ -62,7 +63,7 @@ public class DBCharacterPC : MonoBehaviour
     private void Start()
     {
         SetData();
-        mainUI.SetInitialValues(HumanHp, WolfHp); // Set values in MainUI
+        mainUI.SetInitialValues(HumanHp, WolfHp, 0); // 초기값 설정, 궁극기는 0으로 시작
     }
     public class ItemData
     {
@@ -126,7 +127,10 @@ public class DBCharacterPC : MonoBehaviour
     {
         HitDamageWolf(5); // Assuming you want to take 5 damage for example
     }
-
+    public void AddSkillGaugeButton()
+    {
+        AddSkillGauge(5); // 예를 들어 5 만큼 스킬 게이지 증가
+    }
     // Human 에서 아래 함수 싱글턴 인스턴으 호출 시키면 체력 bar는 자동으로 감소 됨 return 값 활용해도 좋을 듯 죽는 모션 등등
     public float HitDamageHuman(float damage)
     {
@@ -140,4 +144,10 @@ public class DBCharacterPC : MonoBehaviour
         mainUI._crtHpWolf = WolfHp;
         return WolfHp;
     }
+    // 새로운 스킬 게이지 추가 메소드
+    public void AddSkillGauge(float amount)
+    {
+        mainUI.AddSkillGauge(amount);
+    }
+
 }
