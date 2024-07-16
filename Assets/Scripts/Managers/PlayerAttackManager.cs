@@ -52,6 +52,7 @@ public class PlayerAttackManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)
         {
+
             OnAttack();
         }
     }
@@ -63,7 +64,7 @@ public class PlayerAttackManager : MonoBehaviour
         // 공격 애니메이션 트리거 실행
         p_Anim.SetTrigger("BasicAtk");
 
-        swordColi.enabled = true;
+        //swordColi.enabled = true;
 
         StartCoroutine(SwordEffectLoop());
         
@@ -80,7 +81,7 @@ public class PlayerAttackManager : MonoBehaviour
 
             // 여기서 충돌 처리를 합니다.
             MonsterView hitMonster = other.GetComponent<MonsterView>();
-            hitMonster.HurtDamage(150, transform);
+            hitMonster.HurtDamage(50, transform);
 
             StartCoroutine(HitEffectLoop(other));
             StartCoroutine(SlowMotionEffect());

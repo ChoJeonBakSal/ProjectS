@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -20,6 +21,8 @@ public class MonsterView : MonoBehaviour
 
     private NavMeshAgent agent;
     private Animator animator;
+    private Rigidbody rb;
+    private Collider monsterCollider;
 
     private Vector3 PatrolPoint;
 
@@ -37,15 +40,26 @@ public class MonsterView : MonoBehaviour
     private bool isDead;
     private bool isDestroy;
 
+    private float defaultSpeed;
+    private float defaultAngularSpeed;
+
     private void Awake()
     {
         _monsterBTRunner = new MonsterBTRunner(SetMonsterBT());
+        rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        monsterCollider = GetComponent<Collider>();
+
+        agent.speed = 1.5f;
+
+        defaultSpeed = agent.speed;
+        defaultAngularSpeed = agent.angularSpeed;
     }
 
     private void OnEnable()
     {
+        monsterCollider.enabled = true;
         detectZone = GetComponentInChildren<MonsterDetectZone>();
         isAttacking = false;
         isHurt = false;
@@ -53,7 +67,10 @@ public class MonsterView : MonoBehaviour
         isDead = false;
         isDestroy = false;
 
-        agent.speed = 1.5f;
+        agent.speed = defaultSpeed;
+        agent.angularSpeed = defaultAngularSpeed;
+
+        rb.isKinematic = false;        
 
         if (detectZone!= null)
         {
@@ -334,7 +351,14 @@ public class MonsterView : MonoBehaviour
     #region Die
     public IBTNode.EBTNodeState CheckHPZeroOnUpdate()
     {
-        if (isDead) return IBTNode.EBTNodeState.Success;
+        if (isDead) 
+        {
+            rb.isKinematic = true;
+            monsterCollider.enabled = false;
+            agent.speed = 0f;
+            agent.angularSpeed = 0f;
+            return IBTNode.EBTNodeState.Success; 
+        }
 
         if(isDie)
         {

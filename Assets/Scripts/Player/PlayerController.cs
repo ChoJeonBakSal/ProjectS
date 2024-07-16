@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour
     public PlayerController target;
     public float followDistance = 3.0f;                            // 타겟과 유지할 거리
 
+    public bool IsAttacking;
+
     public float InitHp { get; private set; }
     public float CurrentHp
     {
@@ -55,6 +57,8 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         EnableInputActions();
+
+        IsAttacking = false;
     }
 
     private void OnDisable()
@@ -130,7 +134,7 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 mousePos = context.ReadValue<Vector2>();
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo))
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, 50f, (1 << LayerMask.NameToLayer("Ground"))))
             {
                 lookDirection = hitInfo.point - transform.position;
                 lookDirection.y = 0; // Y축 회전 방지
@@ -172,6 +176,8 @@ public class PlayerController : MonoBehaviour
     // 캐릭터 이동 처리
     private void MoveCharacter()
     {
+        if (IsAttacking) return;
+
         Vector3 moveDirection = new Vector3(movement.x, 0, movement.y).normalized;
 
         if (currentPlayerTag == "Human") // Human
@@ -228,6 +234,7 @@ public class PlayerController : MonoBehaviour
     // 캐릭터를 마우스 방향으로 회전
     private void RotateToMouse()
     {
+        if (IsAttacking) return;
         if (!IsCurrentPlayerHuman) return;                 
       
         if (lookDirection != Vector3.zero)
