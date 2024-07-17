@@ -32,6 +32,11 @@ public class PlayerController : MonoBehaviour
 
     public bool IsAttacking;
 
+    public int playerDataInfoID {  get; private set; }
+    public float InitATk {  get; private set; }
+    public int NormalAttackID {  get; private set; }
+    public int SkillAttackID {  get; private set; }
+
     public float InitHp { get; private set; }
     public float CurrentHp
     {
@@ -96,6 +101,10 @@ public class PlayerController : MonoBehaviour
             InitHp = WolfInitHp;
         }
         CurrentHp = InitHp;
+        playerDataInfoID = DBCharacterPC.Instance.GetInfoDBID(currentPlayerTag);
+        InitATk = DBCharacterPC.Instance.GetAttackDamageValue(playerDataInfoID);
+        NormalAttackID = DBCharacterPC.Instance.GetNormalAttackID(playerDataInfoID);
+        SkillAttackID = DBCharacterPC.Instance.GetSkillAttackID(playerDataInfoID);
     }
     // 입력 액션 활성화
     private void EnableInputActions()

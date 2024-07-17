@@ -47,5 +47,5 @@ MonoBehaviour:
   Plane: {fileID: 0}
   monsterSettings:
   - MonsterPrefab: {fileID: 1239032036992100480, guid: 82966112ae3a36c4aaaa0c016670dc53, type: 3}
-    SpawnCount: 5
+    SpawnCount: 10
   MaxWaveCount: 4
