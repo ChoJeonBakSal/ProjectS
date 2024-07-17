@@ -8,12 +8,14 @@ public class MonsterView : MonoBehaviour
 {
     [Header("Monster_Info")]
     [SerializeField] private float MonsterAttakRange;
+    public float AttackRange { get { return MonsterAttakRange; } }
     [SerializeField] private float MonsterAttackDelay;
     [SerializeField] private float MonsterPatrolDelayTimeAverage;
     [SerializeField] private float MonsterHP;
     [SerializeField] private float MonsterATK;
-
-    [SerializeField] Transform _findTarget;
+    public float AttackDamage {  get { return MonsterATK; } }
+        
+    [SerializeField] public Transform _findTarget { get; private set; }
     [SerializeField] LayerMask GroundLayer;
 
     MonsterBTRunner _monsterBTRunner;

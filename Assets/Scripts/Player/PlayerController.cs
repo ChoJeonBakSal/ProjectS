@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     private bool isMoving = false;                                 // 이동 중 여부
     private Vector2 movement;                                      // 이동 입력 값
     private Vector3 lookDirection;                                 // 마우스 위치 기반 회전 방향
-    private string currentPlayerTag;
+    public string currentPlayerTag { get; private set; }
     public float HumanInitHp = 100f;                               // 휴먼 초기 체력
     public float WolfInitHp = 150f;                                // 울프 초기 체력
     [SerializeField] private float _currentHp;
