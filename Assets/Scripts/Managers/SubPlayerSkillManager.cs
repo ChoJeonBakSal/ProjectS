@@ -35,6 +35,10 @@ public class SubPlayerSkillManager : MonoBehaviour
     [SerializeField] private float totalDistance; // 이동할 총 거리
     [SerializeField] private float moveForwardTime; // 이동 시간
 
+    [Header("Player Skill Material")]
+    [SerializeField] private Material ori_Material;
+    [SerializeField] private Material effect_Material;
+
     void Start()
     {
         // 타겟 레이어를 설정합니다. 예를 들어, 레이어 이름이 "Monster"라면:
@@ -64,6 +68,8 @@ public class SubPlayerSkillManager : MonoBehaviour
         Wolfs.SetActive(true);
 
         AfterEffectOn();
+
+        OnChangeMaterial();
 
         isCasting = true;  // 애니메이션 시작 시 공격 상태로 전환
 
@@ -123,6 +129,8 @@ public class SubPlayerSkillManager : MonoBehaviour
         yield return new WaitForSeconds(hitLoopTimeLimit);
 
         Wolfs.SetActive(false);
+
+        OffChangeMaterial();
 
         AfterEffectOff();
 
@@ -207,6 +215,28 @@ public class SubPlayerSkillManager : MonoBehaviour
         foreach(GameObject obj in afterEffect)
         {
             obj.SetActive(true);
+        }
+    }
+
+    void OnChangeMaterial()
+    {
+        // 현재 GameObject의 자식들 중 Skinned Mesh Renderer를 찾아 Material을 변경
+        SkinnedMeshRenderer[] skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+        foreach (var renderer in skinnedMeshRenderers)
+        {
+            renderer.material = effect_Material;
+        }
+    }
+
+    void OffChangeMaterial()
+    {
+        // 현재 GameObject의 자식들 중 Skinned Mesh Renderer를 찾아 Material을 변경
+        SkinnedMeshRenderer[] skinnedMeshRenderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+        foreach (var renderer in skinnedMeshRenderers)
+        {
+            renderer.material = ori_Material;
         }
     }
 }
