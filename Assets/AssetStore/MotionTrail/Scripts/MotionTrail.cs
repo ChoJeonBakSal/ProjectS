@@ -54,6 +54,12 @@ public class MotionTrail : MonoBehaviour {
             }
         }
     }
+
+    private void OnDisable()
+    {
+        
+    }
+
     IEnumerator GhostStart()
     {
         while (true) //break할때 까지 계속 돔.

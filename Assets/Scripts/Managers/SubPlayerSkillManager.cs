@@ -6,6 +6,7 @@ public class SubPlayerSkillManager : MonoBehaviour
 {
     [Header("Skill Object List")]
     [SerializeField] private GameObject Wolfs;
+    [SerializeField] private List<GameObject> wolfs_Anims = new List<GameObject>();
     //[SerializeField] private List<GameObject> bloomObjects = new List<GameObject>();
     [SerializeField] private List<GameObject> afterEffect = new List<GameObject>();
 
@@ -43,6 +44,10 @@ public class SubPlayerSkillManager : MonoBehaviour
         SkillColi.enabled = false;
 
         biteTrailEffect.SetActive(false);
+
+        Wolfs.SetActive(false);
+
+        AfterEffectOff();
     }
 
     // Update is called once per frame
@@ -50,16 +55,22 @@ public class SubPlayerSkillManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && !isCasting)
         {
-            OnAttack();
+            OnCasting();
         }
     }
 
-    void OnAttack()
+    void OnCasting()
     {
+        Wolfs.SetActive(true);
+
+        AfterEffectOn();
+
         isCasting = true;  // 애니메이션 시작 시 공격 상태로 전환
 
         // 공격 애니메이션 트리거 실행
-        p_Anim.SetTrigger("BasicAtk");
+        p_Anim.SetTrigger("BasicSkill");
+        // Wolfs의 애니메이션 foreach문의 실행.
+        PlayAnimator();
 
         SkillColi.enabled = true;
 
@@ -70,10 +81,10 @@ public class SubPlayerSkillManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        //PlayerSkillManager psm = transform.GetComponent<PlayerSkillManager>();
+        SubPlayerAttackManager psm = transform.GetComponent<SubPlayerAttackManager>();
         // 충돌한 객체의 레이어가 타겟 레이어인지 확인합니다.
-        //if (other.gameObject.layer == targetLayer && !psm.isCasting)
-        if (other.gameObject.layer == targetLayer)
+        //if (other.gameObject.layer == targetLayer)
+        if (other.gameObject.layer == targetLayer && !psm.isAttacking)
         {
             Debug.Log("Monster Collider와 충돌 감지!");
 
@@ -110,6 +121,10 @@ public class SubPlayerSkillManager : MonoBehaviour
         transform.position = targetPosition;
 
         yield return new WaitForSeconds(hitLoopTimeLimit);
+
+        Wolfs.SetActive(false);
+
+        AfterEffectOff();
 
         isCasting = false;  // 공격 애니메이션이 끝난 후 공격 상태 해제
 
@@ -168,5 +183,30 @@ public class SubPlayerSkillManager : MonoBehaviour
 
         // 마지막 위치 보정
         transform.position = targetPosition;
+    }
+
+    void PlayAnimator()
+    {
+        foreach(GameObject obj in wolfs_Anims)
+        {
+            Animator wolfs_Anims = obj.GetComponent<Animator>();
+            wolfs_Anims.SetTrigger("BasicSkill");
+        }
+    }
+    
+    void AfterEffectOff()
+    {
+        foreach(GameObject obj in afterEffect)
+        {
+            obj.SetActive(false);
+        }
+    }
+
+    void AfterEffectOn()
+    {
+        foreach(GameObject obj in afterEffect)
+        {
+            obj.SetActive(true);
+        }
     }
 }

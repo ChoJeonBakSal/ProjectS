@@ -64,10 +64,10 @@ public class SubPlayerAttackManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        //PlayerSkillManager psm = transform.GetComponent<PlayerSkillManager>();
+        SubPlayerSkillManager psm = transform.GetComponent<SubPlayerSkillManager>();
         // 충돌한 객체의 레이어가 타겟 레이어인지 확인합니다.
-        //if (other.gameObject.layer == targetLayer && !psm.isCasting)
-        if (other.gameObject.layer == targetLayer)
+        //if (other.gameObject.layer == targetLayer)
+        if (other.gameObject.layer == targetLayer && !psm.isCasting)
         {
             Debug.Log("Monster Collider와 충돌 감지!");
 
