@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     public float HumanInitHp = 100f;                               // 휴먼 초기 체력
     public float WolfInitHp = 150f;                                // 울프 초기 체력
     [SerializeField] private float _currentHp;
-    public bool IsCurrentPlayerHuman { get; set; }                 // 현재 조작 중인 플레이어가 휴먼인지 여부
+    public bool IsCurrentPlayerHuman { get; set; }                 // 현재 조작 중인 플레이어인가를 확인
     public PlayerController target;
     public float followDistance = 3.0f;                            // 타겟과 유지할 거리
 
@@ -228,6 +228,8 @@ public class PlayerController : MonoBehaviour
     // 캐릭터를 마우스 방향으로 회전
     private void RotateToMouse()
     {
+        if (!IsCurrentPlayerHuman) return;                 
+      
         if (lookDirection != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
@@ -243,7 +245,7 @@ public class PlayerController : MonoBehaviour
     #region Wolf
     private void FollowTarget()
     {
-        Debug.Log(currentPlayerTag + " :: " + IsCurrentPlayerHuman);
+        //Debug.Log(currentPlayerTag + " :: " + IsCurrentPlayerHuman);
 
         if (target != null && currentPlayerTag == "Wolf")
         {
@@ -296,7 +298,13 @@ public class PlayerController : MonoBehaviour
             // 동반자의 회전을 네브메시 에이전트의 이동 방향에 맞추기
             if (navMeshAgent.velocity.sqrMagnitude > Mathf.Epsilon)
             {
+                Debug.Log("회전중...");
                 Quaternion targetRotation = Quaternion.LookRotation(navMeshAgent.velocity.normalized);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            }
+            else
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(target.transform.position);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
             }
         }

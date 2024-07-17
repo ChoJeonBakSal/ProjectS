@@ -9,5 +9,8 @@ public class SubPlayer_AI : MonoBehaviour
 
     private NavMeshAgent agent;
 
-    
+    private void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+    }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class IsPlayer : MonoBehaviour
 {
@@ -11,12 +12,12 @@ public class IsPlayer : MonoBehaviour
     [SerializeField] private GameObject Camera;
 
     private PlayerController _playerController;
-    private SubPlayerController _subPlayerController;
+    private NavMeshAgent agent;
 
     private void Awake()
     {
         _playerController = GetComponent<PlayerController>();
-        _subPlayerController = GetComponent<SubPlayerController>();
+        agent = GetComponent<NavMeshAgent>();
 
         PlayerLayer = LayerMask.NameToLayer("Player");
         PlayerSubLayer = LayerMask.NameToLayer("Player_Sub");
@@ -29,23 +30,22 @@ public class IsPlayer : MonoBehaviour
     {
         isPlayer = gameObject.layer == PlayerLayer;
         Debug.Log(isPlayer);
-        if (isPlayer != null) { _playerController.IsCurrentPlayerHuman = isPlayer; }
 
-        /*  if (_playerController != null) _playerController.enabled = isPlayer;
-          else _subPlayerController.enabled = isPlayer;
-  */
+        _playerController.IsCurrentPlayerHuman = isPlayer;
         Camera.SetActive(isPlayer);
     }
 
     public void AllChildTransformChangedLayer()
     {
         isPlayer = gameObject.layer == PlayerLayer ? false : true;
-        if (isPlayer != null) { _playerController.IsCurrentPlayerHuman = isPlayer; }
-        /*      if (_playerController != null) _playerController.enabled = isPlayer;
-              else _subPlayerController.enabled = isPlayer;*/
 
+        _playerController.IsCurrentPlayerHuman = isPlayer;
         Camera.SetActive(isPlayer);
         gameObject.layer = gameObject.layer == PlayerLayer ? PlayerSubLayer : PlayerLayer;
+        
+        agent.ResetPath();
+
+        Debug.Log($"{transform.parent.name}" + agent.updateRotation);
 
         if (transform.childCount > 0)
         {

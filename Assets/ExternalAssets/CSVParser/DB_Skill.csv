@@ -1,0 +1,17 @@
+ID,Description,DamagePercent,CooldownSecond,StatusEffectID,SpecialMoveGaugeCharge,SocketCall,CollisionCall
+400,검사 2번 스킬,50 ,7,1000,20,socket_greatswordman_skill2,col_greatswordman_skill2
+401,늑대 2번 스킬,300 ,8,,20,socket_greatswordman_skill2,col_greatswordman_skill2
+402,검늑 필살기(즉발기),1000 ,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
