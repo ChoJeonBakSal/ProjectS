@@ -111,8 +111,8 @@ public class PlayerController : MonoBehaviour
     {
         playerInputActions.Player.Move.performed += OnMove;
         playerInputActions.Player.Move.canceled += OnMove;
-        playerInputActions.Player.Look.performed += OnLook;
-        playerInputActions.Player.Look.canceled += OnLook;
+        //playerInputActions.Player.Look.performed += OnLook;
+        //playerInputActions.Player.Look.canceled += OnLook;
         playerInputActions.Enable();
     }
 
@@ -121,8 +121,8 @@ public class PlayerController : MonoBehaviour
     {
         playerInputActions.Player.Move.performed -= OnMove;
         playerInputActions.Player.Move.canceled -= OnMove;
-        playerInputActions.Player.Look.performed -= OnLook;
-        playerInputActions.Player.Look.canceled -= OnLook;
+        //playerInputActions.Player.Look.performed -= OnLook;
+        //playerInputActions.Player.Look.canceled -= OnLook;
         playerInputActions.Disable();
     }
 
@@ -137,20 +137,21 @@ public class PlayerController : MonoBehaviour
     }
 
     // 마우스 위치 입력 처리
-    private void OnLook(InputAction.CallbackContext context)
-    {
-        if (IsCurrentPlayerHuman)
-        {
-            Vector3 mousePos = context.ReadValue<Vector2>();
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, 50f, (1 << LayerMask.NameToLayer("Ground"))))
-            {
-                lookDirection = hitInfo.point - transform.position;
-                lookDirection.y = 0; // Y축 회전 방지
-            }
-        }
+    //private void OnLook(InputAction.CallbackContext context)
+    //{
+    //    if (IsAttacking) return;
+    //    if (IsCurrentPlayerHuman)
+    //    {
+    //        Vector3 mousePos = context.ReadValue<Vector2>();
+    //        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+    //        if (Physics.Raycast(ray, out RaycastHit hitInfo, 50f, (1 << LayerMask.NameToLayer("Ground"))))
+    //        {
+    //            lookDirection = hitInfo.point - transform.position;
+    //            lookDirection.y = 0; // Y축 회전 방지
+    //        }
+    //    }
 
-    }
+    //}
 
     // 매 프레임마다 이동 및 애니메이터 업데이트
     private void Update()
@@ -170,10 +171,23 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            CharacterRotation();
             MoveCharacter();
         }
             UpdateAnimatorParameters();
+    }
 
+    private void CharacterRotation()
+    {
+        if (IsAttacking) return;
+
+        Vector3 mousePos = Input.mousePosition;
+        mousePos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, Camera.main.transform.position.y));
+
+        Vector3 direction = mousePos - transform.position;
+        float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+        transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
     }
 
     // 매 프레임 후반에 캐릭터 회전 처리
@@ -242,8 +256,7 @@ public class PlayerController : MonoBehaviour
 
     // 캐릭터를 마우스 방향으로 회전
     private void RotateToMouse()
-    {
-        if (IsAttacking) return;
+    {        
         if (!IsCurrentPlayerHuman) return;                 
       
         if (lookDirection != Vector3.zero)

@@ -90,6 +90,8 @@ public class PlayerAttackManager : MonoBehaviour
             MonsterView hitMonster = other.GetComponent<MonsterView>();
             hitMonster.HurtDamage(playerinfo.InitATk, transform);
 
+            Debug.LogWarning(playerinfo.InitATk);
+
             //게이지 충전
             DBCharacterPC.Instance.AddSkillGauge(_gaugeChargeValue);
 
