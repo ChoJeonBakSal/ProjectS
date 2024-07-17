@@ -1,8 +1,8 @@
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using Unity.VisualScripting;
 
 public class MonsterView : MonoBehaviour
 {
@@ -21,6 +21,8 @@ public class MonsterView : MonoBehaviour
 
     private NavMeshAgent agent;
     private Animator animator;
+    private Rigidbody rb;
+    private Collider monsterCollider;
 
     private Vector3 PatrolPoint;
 
@@ -29,7 +31,8 @@ public class MonsterView : MonoBehaviour
     private readonly int HashDie = Animator.StringToHash("Die");
     private readonly int HashMove = Animator.StringToHash("Move");
 
-    private float _timer = 0;
+    private float _PatrolWaitTimer = 0;
+    private float _AttackDelayTimer = 0;
     private float _monsterPatrolDelay;
     private bool isAttacking;
     private bool isHurt;
@@ -37,15 +40,26 @@ public class MonsterView : MonoBehaviour
     private bool isDead;
     private bool isDestroy;
 
+    private float defaultSpeed;
+    private float defaultAngularSpeed;
+
     private void Awake()
     {
         _monsterBTRunner = new MonsterBTRunner(SetMonsterBT());
+        rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        monsterCollider = GetComponent<Collider>();
+
+        agent.speed = 1.5f;
+
+        defaultSpeed = agent.speed;
+        defaultAngularSpeed = agent.angularSpeed;
     }
 
     private void OnEnable()
     {
+        monsterCollider.enabled = true;
         detectZone = GetComponentInChildren<MonsterDetectZone>();
         isAttacking = false;
         isHurt = false;
@@ -53,7 +67,10 @@ public class MonsterView : MonoBehaviour
         isDead = false;
         isDestroy = false;
 
-        agent.speed = 1.5f;
+        agent.speed = defaultSpeed;
+        agent.angularSpeed = defaultAngularSpeed;
+
+        rb.isKinematic = false;        
 
         if (detectZone!= null)
         {
@@ -61,6 +78,7 @@ public class MonsterView : MonoBehaviour
         }
 
         _monsterPatrolDelay = Random.Range(MonsterPatrolDelayTimeAverage - 1, MonsterPatrolDelayTimeAverage + 1);
+        MonsterSpawnManager.Instance.AddMonsterList(this);
     }
 
     private void OnDisable()
@@ -68,7 +86,9 @@ public class MonsterView : MonoBehaviour
         if(detectZone != null)
         {
             detectZone.OnTargetChanged -= SetTarget;
-        }
+        }        
+
+        MonsterSpawnManager.Instance.RemoveMonsterList(this);
     }
 
     private void SetTarget(Transform target)
@@ -147,7 +167,9 @@ public class MonsterView : MonoBehaviour
 
         float distance = Vector3.Distance(_findTarget.position, transform.position);
 
-        if(distance > MonsterAttakRange)
+        _AttackDelayTimer = Mathf.Clamp(_AttackDelayTimer + Time.deltaTime, 0f, MonsterAttackDelay);
+
+        if (distance > MonsterAttakRange)
         {
             agent.stoppingDistance = MonsterAttakRange;
             animator.SetBool(HashMove, true);
@@ -157,9 +179,14 @@ public class MonsterView : MonoBehaviour
 
         //공격 애니메이션 실행
         animator.SetBool(HashMove, false);
-        animator.SetTrigger(HashAttack);
-        isAttacking = true;
-        return IBTNode.EBTNodeState.Success;
+
+        if (_AttackDelayTimer >= MonsterAttackDelay)
+        {
+            animator.SetTrigger(HashAttack);
+            isAttacking = true;
+            _AttackDelayTimer = 0;
+            return IBTNode.EBTNodeState.Success;
+        } else return IBTNode.EBTNodeState.Running;          
     }
 
     //공격 동작이 끝났는지 확인
@@ -201,14 +228,14 @@ public class MonsterView : MonoBehaviour
         if (isDie || isHurt) return IBTNode.EBTNodeState.Fail;
         if (_findTarget != null) return IBTNode.EBTNodeState.Fail;
 
-        if (_timer < _monsterPatrolDelay)
+        if (_PatrolWaitTimer < _monsterPatrolDelay)
         {
-            _timer += Time.deltaTime;
+            _PatrolWaitTimer += Time.deltaTime;
             return IBTNode.EBTNodeState.Running;
         }
         else
         {
-            _timer = 0f;
+            _PatrolWaitTimer = 0f;
             _monsterPatrolDelay = Random.Range(MonsterPatrolDelayTimeAverage - 1, MonsterPatrolDelayTimeAverage + 1);
             return IBTNode.EBTNodeState.Success;
         }
@@ -324,7 +351,14 @@ public class MonsterView : MonoBehaviour
     #region Die
     public IBTNode.EBTNodeState CheckHPZeroOnUpdate()
     {
-        if (isDead) return IBTNode.EBTNodeState.Success;
+        if (isDead) 
+        {
+            rb.isKinematic = true;
+            monsterCollider.enabled = false;
+            agent.speed = 0f;
+            agent.angularSpeed = 0f;
+            return IBTNode.EBTNodeState.Success; 
+        }
 
         if(isDie)
         {
@@ -360,7 +394,7 @@ public class MonsterView : MonoBehaviour
 
         isDestroy = true;
         yield return new WaitForSeconds(2f);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
         isDestroy = false;
         yield break;
     }
