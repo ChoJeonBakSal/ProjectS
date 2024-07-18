@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerAttackManager : MonoBehaviour
 {
+    [Header("Hit Damage")]
+    [SerializeField] private float hitDamage = 20f;
+
     [Header("Player variable")]
     [SerializeField] private Animator p_Anim;
     [SerializeField] public bool isAttacking = false; // 애니메이션 실행중 재입력 불가

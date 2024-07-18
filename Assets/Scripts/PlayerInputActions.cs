@@ -80,6 +80,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UltimateSkill"",
+                    ""type"": ""Button"",
+                    ""id"": ""846f5148-89e5-4980-b9a6-ee317974f953"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -192,6 +201,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""BasicSkill"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""50e3d548-8869-48b2-be07-de48efc8faf8"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""UltimateSkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -218,6 +238,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_PlayerChanged = m_Player.FindAction("PlayerChanged", throwIfNotFound: true);
         m_Player_BasicAtk = m_Player.FindAction("BasicAtk", throwIfNotFound: true);
         m_Player_BasicSkill = m_Player.FindAction("BasicSkill", throwIfNotFound: true);
+        m_Player_UltimateSkill = m_Player.FindAction("UltimateSkill", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -285,6 +306,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_PlayerChanged;
     private readonly InputAction m_Player_BasicAtk;
     private readonly InputAction m_Player_BasicSkill;
+    private readonly InputAction m_Player_UltimateSkill;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -295,6 +317,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @PlayerChanged => m_Wrapper.m_Player_PlayerChanged;
         public InputAction @BasicAtk => m_Wrapper.m_Player_BasicAtk;
         public InputAction @BasicSkill => m_Wrapper.m_Player_BasicSkill;
+        public InputAction @UltimateSkill => m_Wrapper.m_Player_UltimateSkill;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -322,6 +345,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @BasicSkill.started += instance.OnBasicSkill;
             @BasicSkill.performed += instance.OnBasicSkill;
             @BasicSkill.canceled += instance.OnBasicSkill;
+            @UltimateSkill.started += instance.OnUltimateSkill;
+            @UltimateSkill.performed += instance.OnUltimateSkill;
+            @UltimateSkill.canceled += instance.OnUltimateSkill;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -344,6 +370,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @BasicSkill.started -= instance.OnBasicSkill;
             @BasicSkill.performed -= instance.OnBasicSkill;
             @BasicSkill.canceled -= instance.OnBasicSkill;
+            @UltimateSkill.started -= instance.OnUltimateSkill;
+            @UltimateSkill.performed -= instance.OnUltimateSkill;
+            @UltimateSkill.canceled -= instance.OnUltimateSkill;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -378,5 +407,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnPlayerChanged(InputAction.CallbackContext context);
         void OnBasicAtk(InputAction.CallbackContext context);
         void OnBasicSkill(InputAction.CallbackContext context);
+        void OnUltimateSkill(InputAction.CallbackContext context);
     }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SubPlayerSkillManager : MonoBehaviour
 {
+    [Header("Skill Damage")]
+    [SerializeField] private float skillDamage = 60f;
+
     [Header("Skill Object List")]
     [SerializeField] private GameObject Wolfs;
     [SerializeField] private List<GameObject> wolfs_Anims = new List<GameObject>();
@@ -99,7 +102,8 @@ public class SubPlayerSkillManager : MonoBehaviour
 
             // 여기서 충돌 처리를 합니다.
             MonsterView hitMonster = other.GetComponent<MonsterView>();
-            hitMonster.HurtDamage(150, transform);
+            if (hitMonster != null)
+                hitMonster.HurtDamage(skillDamage, transform);
 
             StartCoroutine(HitEffectLoop(other));
             StartCoroutine(SlowMotionEffect());
@@ -146,7 +150,8 @@ public class SubPlayerSkillManager : MonoBehaviour
     {
         yield return new WaitForSeconds(hitEffectDalayTime);
 
-        Vector3 hitPoint = other.ClosestPoint(transform.position); // 충돌 지점 추정
+        //Vector3 hitPoint = other.ClosestPoint(transform.position); // 충돌 지점 추정
+        Vector3 hitPoint = other.transform.position; // 충돌 지점 추정
         Vector3 newPosition = hitPoint + new Vector3(0, 0.1f, 0);
 
         GameObject effectPlayer = (GameObject)Instantiate(hitEffect, newPosition, transform.rotation);

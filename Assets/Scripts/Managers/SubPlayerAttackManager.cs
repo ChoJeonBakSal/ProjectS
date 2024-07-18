@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SubPlayerAttackManager : MonoBehaviour
 {
+    [Header("Hit Damage")]
+    [SerializeField] private float hitDamage = 20f;
+
     [Header("Player variable")]
     [SerializeField] private Animator p_Anim;
     [SerializeField] public bool isAttacking = false; // 애니메이션 실행중 재입력 불가
@@ -67,6 +70,9 @@ public class SubPlayerAttackManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        //if (!other.TryGetComponent<SphereCollider>(out SphereCollider sphereCollider))
+        //    return;
+
         SubPlayerSkillManager psm = transform.GetComponent<SubPlayerSkillManager>();
         // 충돌한 객체의 레이어가 타겟 레이어인지 확인합니다.
         //if (other.gameObject.layer == targetLayer)
@@ -76,7 +82,8 @@ public class SubPlayerAttackManager : MonoBehaviour
 
             // 여기서 충돌 처리를 합니다.
             MonsterView hitMonster = other.GetComponent<MonsterView>();
-            hitMonster.HurtDamage(150, transform);
+            if(hitMonster != null)
+                hitMonster.HurtDamage(hitDamage, transform);
 
             StartCoroutine(HitEffectLoop(other));
             StartCoroutine(SlowMotionEffect());
@@ -117,7 +124,8 @@ public class SubPlayerAttackManager : MonoBehaviour
     {
         yield return new WaitForSeconds(hitEffectDalayTime);
         
-        Vector3 hitPoint = other.ClosestPoint(transform.position); // 충돌 지점 추정
+        //Vector3 hitPoint = other.ClosestPoint(transform.position); // 충돌 지점 추정
+        Vector3 hitPoint = other.transform.position; // 충돌 지점 추정
         Vector3 newPosition = hitPoint + new Vector3(0, 0.1f, 0);
 
         GameObject effectPlayer = (GameObject)Instantiate(hitEffect, newPosition, transform.rotation);

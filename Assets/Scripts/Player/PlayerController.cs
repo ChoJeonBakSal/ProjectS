@@ -4,9 +4,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("MainUI Ultimate Skill Gauge")]
+    [SerializeField] private GameObject MainUI;
+
     [Header("Layer로 스킬 구분")]
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject subPlayerCamera;
+    [SerializeField] private GameObject UtimateSkillManagerObj;
+    [SerializeField] private UtimateSkillManager UtimateSkillManager;
 
     [Header("Human Set")] // 휴먼                              [ 모든 값은 임의 설정 ]
     [SerializeField] float HumanrunSpeed = 5.0f;                   // 뛰기 속도
@@ -61,6 +66,9 @@ public class PlayerController : MonoBehaviour
         InitializeInputActions();
         InitializeSetPlayerTag();
         InitializeSetPlayerHp();
+
+        UtimateSkillManagerObj = GameObject.Find("UtimateSkillManager");
+        UtimateSkillManager = UtimateSkillManagerObj.GetComponent<UtimateSkillManager>();
     }
 
     private void OnEnable()
@@ -124,6 +132,10 @@ public class PlayerController : MonoBehaviour
         playerInputActions.Player.BasicSkill.performed += OnBasicSkill;
         playerInputActions.Player.BasicSkill.canceled += OnBasicSkill;
 
+        // 궁극기
+        playerInputActions.Player.UltimateSkill.performed += OnUltimateSkill;
+        playerInputActions.Player.UltimateSkill.canceled += OnUltimateSkill;
+
         //playerInputActions.Player.Look.performed += OnLook;
         //playerInputActions.Player.Look.canceled += OnLook;
         playerInputActions.Enable();
@@ -142,6 +154,10 @@ public class PlayerController : MonoBehaviour
         // 인간 스킬
         playerInputActions.Player.BasicSkill.performed -= OnBasicSkill;
         playerInputActions.Player.BasicSkill.canceled -= OnBasicSkill;
+
+        // 궁극기
+        playerInputActions.Player.UltimateSkill.performed -= OnUltimateSkill;
+        playerInputActions.Player.UltimateSkill.canceled -= OnUltimateSkill;
 
         //playerInputActions.Player.Look.performed -= OnLook;
         //playerInputActions.Player.Look.canceled -= OnLook;
@@ -164,16 +180,16 @@ public class PlayerController : MonoBehaviour
         if (playerCamera.activeSelf && !subPlayerCamera.activeSelf)
         {
             Debug.Log("인간 공격");
-            PlayerAttackManager pam = GetComponent<PlayerAttackManager>();
-            PlayerSkillManager psm = GetComponent<PlayerSkillManager>();
+            PlayerAttackManager pam = GameObject.Find("Human").GetComponent<PlayerAttackManager>();
+            PlayerSkillManager psm = GameObject.Find("Human").GetComponent<PlayerSkillManager>();
             if (!pam.isAttacking && !psm.isCasting)
                 pam.OnAttack();
         }
         else if (!playerCamera.activeSelf && subPlayerCamera.activeSelf)
         {
             Debug.Log("늑대 공격");
-            SubPlayerAttackManager sam = GetComponent<SubPlayerAttackManager>();
-            SubPlayerSkillManager ssm = GetComponent<SubPlayerSkillManager>();
+            SubPlayerAttackManager sam = GameObject.Find("Wolf").GetComponent<SubPlayerAttackManager>();
+            SubPlayerSkillManager ssm = GameObject.Find("Wolf").GetComponent<SubPlayerSkillManager>();
             if (!sam.isAttacking && !ssm.isCasting)
                 sam.OnAttack();
         }
@@ -185,20 +201,47 @@ public class PlayerController : MonoBehaviour
         if (playerCamera.activeSelf && !subPlayerCamera.activeSelf)
         {
             Debug.Log("인간 스킬 공격");
-            PlayerAttackManager pam = GetComponent<PlayerAttackManager>();
-            PlayerSkillManager psm = GetComponent<PlayerSkillManager>();
+            PlayerAttackManager pam = GameObject.Find("Human").GetComponent<PlayerAttackManager>();
+            PlayerSkillManager psm = GameObject.Find("Human").GetComponent<PlayerSkillManager>();
             if(!pam.isAttacking && !psm.isCasting)
                 psm.OnSkill();
         }
         else if (!playerCamera.activeSelf && subPlayerCamera.activeSelf)
         {
             Debug.Log("늑대 스킬 공격");
-            SubPlayerAttackManager sam = GetComponent<SubPlayerAttackManager>();
-            SubPlayerSkillManager ssm = GetComponent<SubPlayerSkillManager>();
+            SubPlayerAttackManager sam = GameObject.Find("Wolf").GetComponent<SubPlayerAttackManager>();
+            SubPlayerSkillManager ssm = GameObject.Find("Wolf").GetComponent<SubPlayerSkillManager>();
             if (!sam.isAttacking && !ssm.isCasting)
                 ssm.OnCasting();
         }
 
+    }
+
+    void OnUltimateSkill(InputAction.CallbackContext context)
+    {
+        MainUI mui = this.MainUI.GetComponent<MainUI>();
+        if (mui._crtSkillGauge != 100)
+            return;
+        else
+            mui._crtSkillGauge = 0;
+
+
+        Debug.Log("궁극기 공격");
+
+        if (playerCamera.activeSelf && !subPlayerCamera.activeSelf)
+        {
+            PlayerAttackManager pam = GameObject.Find("Human").GetComponent<PlayerAttackManager>();
+            PlayerSkillManager psm = GameObject.Find("Human").GetComponent<PlayerSkillManager>();
+            if (!pam.isAttacking && !psm.isCasting)
+                UtimateSkillManager.OnSkill();
+        }
+        else if (!playerCamera.activeSelf && subPlayerCamera.activeSelf)
+        {
+            SubPlayerAttackManager sam = GameObject.Find("Wolf").GetComponent<SubPlayerAttackManager>();
+            SubPlayerSkillManager ssm = GameObject.Find("Wolf").GetComponent<SubPlayerSkillManager>();
+            if (!sam.isAttacking && !ssm.isCasting)
+                UtimateSkillManager.OnSkill();
+        }
     }
 
     // 마우스 위치 입력 처리

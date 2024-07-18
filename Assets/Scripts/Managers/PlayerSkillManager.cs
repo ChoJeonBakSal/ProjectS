@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerSkillManager : MonoBehaviour
 {
+    [Header("Skill Damage")]
+    [SerializeField] private float skillDamage = 60f;
+
     [Header("Player variable")]
     [SerializeField] private Animator p_Anim;
     [SerializeField] private Rigidbody rb;
@@ -87,6 +90,9 @@ public class PlayerSkillManager : MonoBehaviour
             Debug.Log("Monster Collider와 충돌 감지!");
 
             // 여기서 충돌 처리를 합니다.
+            MonsterView hitMonster = other.GetComponent<MonsterView>();
+            hitMonster.HurtDamage(skillDamage, transform);
+
             StartCoroutine(HitEffectLoop(other));
             StartCoroutine(SlowMotionEffect());
         }

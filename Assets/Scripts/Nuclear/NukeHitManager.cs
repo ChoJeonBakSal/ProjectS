@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class NukeHitManager : MonoBehaviour
 {
+    [Header("Skill Damage")]
+    [SerializeField] private float uSkillDamage = 50f;
+
     [SerializeField] private int targetLayer;
 
     [Header("Hit Effect Timing")]
@@ -39,6 +42,10 @@ public class NukeHitManager : MonoBehaviour
             Debug.Log("Nuke Monster Collider와 충돌 감지!");
 
             // 여기서 충돌 처리를 합니다.
+            MonsterView hitMonster = other.GetComponent<MonsterView>();
+            if (hitMonster != null)
+                hitMonster.HurtDamage(uSkillDamage, transform);
+
             StartCoroutine(HitEffectLoop(other));
             //StartCoroutine(SlowMotionEffect());
         }
@@ -47,7 +54,9 @@ public class NukeHitManager : MonoBehaviour
 
     IEnumerator HitEffectLoop(Collider other)
     {
-        Vector3 hitPoint = other.ClosestPoint(transform.position); // 충돌 지점 추정
+        //Vector3 hitPoint = other.ClosestPoint(transform.position); // 충돌 지점 추정
+        Vector3 hitPoint = other.transform.position; // 충돌 지점 추정
+
         Vector3 newPosition = hitPoint + new Vector3(0, 1, 0);
 
         yield return new WaitForSeconds(hitDelayTime);

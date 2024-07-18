@@ -20,15 +20,15 @@ public class UtimateSkillManager : MonoBehaviour
     [SerializeField] private float nukeSpawnDelayTime = 5f; // 스폰 지연시간
     [SerializeField] private float nukeDestroyDelayTime = 2f; // 스폰 지연시간
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            OnSkill();
-        }
-    }
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Mouse0))
+    //    {
+    //        OnSkill();
+    //    }
+    //}
 
-    void OnSkill()
+    public void OnSkill()
     {
         // 컷씬 On / Off
         StartCoroutine(CutSceneLoading());
