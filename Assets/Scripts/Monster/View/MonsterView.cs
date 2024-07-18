@@ -211,11 +211,11 @@ public class MonsterView : MonoBehaviour
         if(animator == null) return false;
 
         bool isRunning = false;
-        var aaa = animator.GetCurrentAnimatorStateInfo(0);
+        var currentAnimationStateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName(animationName))
+        if (currentAnimationStateInfo.IsName(animationName))
         {
-            float normalizedTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            float normalizedTime = currentAnimationStateInfo.normalizedTime;
             isRunning = normalizedTime >= 0 && normalizedTime < 1.0f;
         }
 
