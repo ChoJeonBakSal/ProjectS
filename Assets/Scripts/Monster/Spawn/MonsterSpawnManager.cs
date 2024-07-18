@@ -35,6 +35,7 @@ public class MonsterSpawnManager : MonoBehaviour
         Instance = this;
 
         InitSpawnPointList();
+        isSpawning = true;
     }
 
     private void InitSpawnPointList()
@@ -112,5 +113,10 @@ public class MonsterSpawnManager : MonoBehaviour
     public void RemoveMonsterList(MonsterView newObject)
     {
         monsterList.Remove(newObject);
+    }
+
+    public void OnClick_StartWave()
+    {
+        isSpawning = false;
     }
 }
