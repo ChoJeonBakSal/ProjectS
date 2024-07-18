@@ -8,7 +8,9 @@ public class DBCharacterPC : MonoBehaviour
 {
     #region CSV Set
     [SerializeField] private MainUI mainUI; 
-    public TextAsset dbFile;
+    public TextAsset _playersInfoDbFile;
+    public TextAsset _normalAttackDBFile;
+
     public List<string> TypeNameList = new List<string>();
     private static DBCharacterPC _instance;
     public static DBCharacterPC Instance
@@ -51,14 +53,15 @@ public class DBCharacterPC : MonoBehaviour
         {
             _instance = this;
             DontDestroyOnLoad(gameObject);
-
-            LoadDb(dbFile);
-
         }
         else if (_instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        LoadPlayersInfoDb(_playersInfoDbFile);
+        LoadNormalAttackDB(_normalAttackDBFile);
     }
     private void Start()
     {
@@ -79,9 +82,19 @@ public class DBCharacterPC : MonoBehaviour
         public int SkillID;
     }
 
-    public List<ItemData> dbList = new List<ItemData>();
+    public class NormalAttack
+    {
+        public int ID;
+        public string Description;
+        public float DamagePercet;
+        public float SpecialMoveGaugeCharge;
+        public float MaxSpecialMoveGaugeCharge;
+    }
 
-    private void LoadDb(TextAsset csvFile)
+    public List<ItemData> dbList = new List<ItemData>();
+    public List<NormalAttack> normalAttacks = new List<NormalAttack>();
+
+    private void LoadPlayersInfoDb(TextAsset csvFile)
     {
         string[][] grid = CsvReadWrite.LoadTextFile(csvFile);
         for (int i = 1; i < grid.Length; i++)
@@ -109,6 +122,31 @@ public class DBCharacterPC : MonoBehaviour
             dbList.Add(row);
         }
     }
+
+    private void LoadNormalAttackDB(TextAsset csvFile)
+    {
+        string[][] grid = CsvReadWrite.LoadTextFile(csvFile);
+        for (int i = 1; i < grid.Length; i++)
+        {
+            if (grid[i].Length == 0 || string.IsNullOrWhiteSpace(grid[i][0]))
+            {
+                // 빈 줄 또는 첫 번째 셀이 빈 경우 무시
+                continue;
+            }
+
+            NormalAttack row = new NormalAttack();
+            row.ID = Int32.Parse(grid[i][0]);
+            row.Description = grid[i][1];
+            row.DamagePercet = float.Parse(grid[i][2]);
+            row.SpecialMoveGaugeCharge = float.Parse(grid[i][6]);
+            row.MaxSpecialMoveGaugeCharge = float.Parse(grid[i][7]);
+
+            /*   row.Icon = Resources.Load<Sprite>("Images/Items/" + grid[i][2] + "/" + grid[i][4]); // 아이콘 로드
+               row.EquipCategory = grid[i][8];*/
+            normalAttacks.Add(row);
+        }
+    }
+
     private void SetData() 
     {
         if (dbList.Count > 0)
@@ -150,4 +188,70 @@ public class DBCharacterPC : MonoBehaviour
         mainUI.AddSkillGauge(amount);
     }
 
+    public int GetInfoDBID(string currentPlayerTag)
+    {
+        if (dbList.Count <= 0) return -1;
+
+        if (currentPlayerTag == "Human")
+        {
+            return dbList[0].ID;
+        }
+        else
+        {
+            return dbList[1].ID;
+        }
+    }
+
+    public float GetAttackDamageValue(int infoId)
+    {
+        foreach(var item in dbList)
+        {
+            if(item.ID == infoId)
+            {
+                return item.BaseAttackDamage;
+            }
+        }
+
+        return -1f;  
+    }
+
+    public int GetNormalAttackID(int infoId)
+    {
+        foreach (var item in dbList)
+        {
+            if (item.ID == infoId) return item.NormalAttackID;
+        }
+
+        return -1;
+    }
+
+    public int GetSkillAttackID(int infoId)
+    {
+        foreach (var item in dbList)
+        {
+            if (item.ID == infoId) return item.SkillID;
+        }
+
+        return -1;
+    }
+
+    public float GetGaugeChargeValue(int attackId)
+    {
+        foreach(var item in normalAttacks)
+        {
+            if(item.ID == attackId) return item.SpecialMoveGaugeCharge;
+        }
+
+        return -1f;
+    }
+
+    public float GetMaxGagueChargeValue(int attackId)
+    {
+        foreach (var item in normalAttacks)
+        {
+            if (item.ID == attackId) return item.MaxSpecialMoveGaugeCharge;
+        }
+
+        return -1f;
+    }
 }

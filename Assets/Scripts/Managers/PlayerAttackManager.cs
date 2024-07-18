@@ -8,7 +8,6 @@ public class PlayerAttackManager : MonoBehaviour
     [SerializeField] private Animator p_Anim;
     [SerializeField] public bool isAttacking = false; // 애니메이션 실행중 재입력 불가
 
-
     [Header("Hit Effect")]
     [SerializeField] private BoxCollider swordColi;
     [SerializeField] private int targetLayer;
@@ -36,6 +35,14 @@ public class PlayerAttackManager : MonoBehaviour
     private bool disableSound = true;
     [SerializeField] private float swordSpawnScale = 1.0f;
 
+    PlayerController playerinfo;
+    private float _gaugeChargeValue;
+
+    private void Awake()
+    {
+        playerinfo = GetComponent<PlayerController>();
+        _gaugeChargeValue = DBCharacterPC.Instance.GetGaugeChargeValue(playerinfo.NormalAttackID);
+    }
 
     void Start()
     {
@@ -81,7 +88,12 @@ public class PlayerAttackManager : MonoBehaviour
 
             // 여기서 충돌 처리를 합니다.
             MonsterView hitMonster = other.GetComponent<MonsterView>();
-            hitMonster.HurtDamage(50, transform);
+            hitMonster.HurtDamage(playerinfo.InitATk, transform);
+
+            Debug.LogWarning(playerinfo.InitATk);
+
+            //게이지 충전
+            DBCharacterPC.Instance.AddSkillGauge(_gaugeChargeValue);
 
             StartCoroutine(HitEffectLoop(other));
             StartCoroutine(SlowMotionEffect());

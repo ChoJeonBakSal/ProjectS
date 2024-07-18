@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class PlayerAttack : StateMachineBehaviour
@@ -17,7 +16,7 @@ public class PlayerAttack : StateMachineBehaviour
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(stateInfo.normalizedTime >= 0.07f && stateInfo.normalizedTime <= 0.3f)
+        if(stateInfo.normalizedTime >= 0.09f && stateInfo.normalizedTime <= 0.3f)
         {
             collider.enabled = true;
         }
@@ -25,10 +24,12 @@ public class PlayerAttack : StateMachineBehaviour
         {
             collider.enabled = false;
         }
+
+        if(stateInfo.normalizedTime >= 1f) owner.IsAttacking = false;
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        owner.IsAttacking = false;
+        animator.ResetTrigger("BasicAtk");
     }
 }

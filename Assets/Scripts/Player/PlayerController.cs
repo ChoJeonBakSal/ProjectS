@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     private bool isMoving = false;                                 // 이동 중 여부
     private Vector2 movement;                                      // 이동 입력 값
     private Vector3 lookDirection;                                 // 마우스 위치 기반 회전 방향
-    private string currentPlayerTag;
+    public string currentPlayerTag { get; private set; }
     public float HumanInitHp = 100f;                               // 휴먼 초기 체력
     public float WolfInitHp = 150f;                                // 울프 초기 체력
     [SerializeField] private float _currentHp;
@@ -31,6 +31,11 @@ public class PlayerController : MonoBehaviour
     public float followDistance = 3.0f;                            // 타겟과 유지할 거리
 
     public bool IsAttacking;
+
+    public int playerDataInfoID {  get; private set; }
+    public float InitATk {  get; private set; }
+    public int NormalAttackID {  get; private set; }
+    public int SkillAttackID {  get; private set; }
 
     public float InitHp { get; private set; }
     public float CurrentHp
@@ -96,14 +101,18 @@ public class PlayerController : MonoBehaviour
             InitHp = WolfInitHp;
         }
         CurrentHp = InitHp;
+        playerDataInfoID = DBCharacterPC.Instance.GetInfoDBID(currentPlayerTag);
+        InitATk = DBCharacterPC.Instance.GetAttackDamageValue(playerDataInfoID);
+        NormalAttackID = DBCharacterPC.Instance.GetNormalAttackID(playerDataInfoID);
+        SkillAttackID = DBCharacterPC.Instance.GetSkillAttackID(playerDataInfoID);
     }
     // 입력 액션 활성화
     private void EnableInputActions()
     {
         playerInputActions.Player.Move.performed += OnMove;
         playerInputActions.Player.Move.canceled += OnMove;
-        playerInputActions.Player.Look.performed += OnLook;
-        playerInputActions.Player.Look.canceled += OnLook;
+        //playerInputActions.Player.Look.performed += OnLook;
+        //playerInputActions.Player.Look.canceled += OnLook;
         playerInputActions.Enable();
     }
 
@@ -112,8 +121,8 @@ public class PlayerController : MonoBehaviour
     {
         playerInputActions.Player.Move.performed -= OnMove;
         playerInputActions.Player.Move.canceled -= OnMove;
-        playerInputActions.Player.Look.performed -= OnLook;
-        playerInputActions.Player.Look.canceled -= OnLook;
+        //playerInputActions.Player.Look.performed -= OnLook;
+        //playerInputActions.Player.Look.canceled -= OnLook;
         playerInputActions.Disable();
     }
 
@@ -128,20 +137,21 @@ public class PlayerController : MonoBehaviour
     }
 
     // 마우스 위치 입력 처리
-    private void OnLook(InputAction.CallbackContext context)
-    {
-        if (IsCurrentPlayerHuman)
-        {
-            Vector3 mousePos = context.ReadValue<Vector2>();
-            Ray ray = Camera.main.ScreenPointToRay(mousePos);
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, 50f, (1 << LayerMask.NameToLayer("Ground"))))
-            {
-                lookDirection = hitInfo.point - transform.position;
-                lookDirection.y = 0; // Y축 회전 방지
-            }
-        }
+    //private void OnLook(InputAction.CallbackContext context)
+    //{
+    //    if (IsAttacking) return;
+    //    if (IsCurrentPlayerHuman)
+    //    {
+    //        Vector3 mousePos = context.ReadValue<Vector2>();
+    //        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+    //        if (Physics.Raycast(ray, out RaycastHit hitInfo, 50f, (1 << LayerMask.NameToLayer("Ground"))))
+    //        {
+    //            lookDirection = hitInfo.point - transform.position;
+    //            lookDirection.y = 0; // Y축 회전 방지
+    //        }
+    //    }
 
-    }
+    //}
 
     // 매 프레임마다 이동 및 애니메이터 업데이트
     private void Update()
@@ -161,10 +171,23 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            CharacterRotation();
             MoveCharacter();
         }
             UpdateAnimatorParameters();
+    }
 
+    private void CharacterRotation()
+    {
+        if (IsAttacking) return;
+
+        Vector3 mousePos = Input.mousePosition;
+        mousePos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, Camera.main.transform.position.y));
+
+        Vector3 direction = mousePos - transform.position;
+        float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+        transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
     }
 
     // 매 프레임 후반에 캐릭터 회전 처리
@@ -233,8 +256,7 @@ public class PlayerController : MonoBehaviour
 
     // 캐릭터를 마우스 방향으로 회전
     private void RotateToMouse()
-    {
-        if (IsAttacking) return;
+    {        
         if (!IsCurrentPlayerHuman) return;                 
       
         if (lookDirection != Vector3.zero)
