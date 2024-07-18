@@ -34,6 +34,7 @@ public class DBCharacterPC : MonoBehaviour
     #region Player Set
     [SerializeField] private float _humanHp;
     [SerializeField] private float _wolfHp;
+    public GameObject UltimateEffectObj;
     public float HumanHp
     {
         get { return _humanHp; }
@@ -252,5 +253,16 @@ public class DBCharacterPC : MonoBehaviour
         }
 
         return -1f;
+    }
+    public void UltimateSkillEffectOnOff(bool v)
+    {
+        if (v)
+        {
+            UltimateEffectObj.gameObject.SetActive(true);
+        }
+        else
+        {
+            UltimateEffectObj.gameObject.SetActive(false);
+        }
     }
 }

@@ -38,6 +38,13 @@ public class MainUI : MonoBehaviour
         BarHpHuman.fillAmount = _crtHpHuman / MaxHpHuman;
         BarHpWolf.fillAmount = _crtHpWolf / MaxHpWolf;
         BarSkillGauge.fillAmount = _crtSkillGauge / MaxSkillGauge;
+        if(BarSkillGauge.fillAmount >= 1)
+        {
+            DBCharacterPC.Instance.UltimateSkillEffectOnOff(true);
+        } else
+        {
+            DBCharacterPC.Instance.UltimateSkillEffectOnOff(false);
+        }
 
 
     }
