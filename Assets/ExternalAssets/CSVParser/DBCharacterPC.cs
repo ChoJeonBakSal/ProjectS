@@ -45,8 +45,12 @@ public class DBCharacterPC : MonoBehaviour
         get { return _wolfHp; }
         set { _wolfHp = value; }
     }
- 
+
     #endregion
+
+    public BossBar BossBarObj;
+    [SerializeField] float bossCurrentHp = 5000;
+    public float bossFixHp = 5000;
     void Awake()
     {
         if (_instance == null)
@@ -59,7 +63,7 @@ public class DBCharacterPC : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
+        BossBarActiceCheck();
         LoadPlayersInfoDb(_playersInfoDbFile);
         LoadNormalAttackDB(_normalAttackDBFile);
     }
@@ -157,17 +161,10 @@ public class DBCharacterPC : MonoBehaviour
     }
 
     // TEST
-    public void HmTakeDamageButton()
+
+    public void test()
     {
-        HitDamageHuman(5); // Assuming you want to take 5 damage for example
-    }    
-    public void WolfTakeDamageButton()
-    {
-        HitDamageWolf(5); // Assuming you want to take 5 damage for example
-    }
-    public void AddSkillGaugeButton()
-    {
-        AddSkillGauge(5); // 예를 들어 5 만큼 스킬 게이지 증가
+        BossBarHitDamate(5); // 예를 들어 5 만큼 스킬 게이지 증가
     }
     // Human 에서 아래 함수 싱글턴 인스턴으 호출 시키면 체력 bar는 자동으로 감소 됨 return 값 활용해도 좋을 듯 죽는 모션 등등
     public float HitDamageHuman(float damage)
@@ -264,5 +261,18 @@ public class DBCharacterPC : MonoBehaviour
         {
             UltimateEffectObj.gameObject.SetActive(false);
         }
+    }
+    // 보스전 진입 시 HpBar 활성화를 위해 아래 함수 호출하기
+    public void BossBarActiceCheck()
+    {
+        if (!BossBarObj.gameObject.activeSelf)
+        {
+            BossBarObj.gameObject.SetActive(true);
+        }
+    }
+    public void BossBarHitDamate(float damage)
+    {
+        bossCurrentHp -= damage;
+        BossBarObj.RefreshBossHp(bossCurrentHp);
     }
 }
