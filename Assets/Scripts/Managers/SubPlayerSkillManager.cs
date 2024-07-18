@@ -55,34 +55,37 @@ public class SubPlayerSkillManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Mouse0) && !isCasting)
+    //    {
+    //        OnCasting();
+    //    }
+    //}
+
+    public void OnCasting()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !isCasting)
+        if (!isCasting) 
         {
-            OnCasting();
+            Wolfs.SetActive(true);
+
+            AfterEffectOn();
+
+            OnChangeMaterial();
+
+            isCasting = true;  // 애니메이션 시작 시 공격 상태로 전환
+
+            // 공격 애니메이션 트리거 실행
+            p_Anim.SetTrigger("BasicSkill");
+            // Wolfs의 애니메이션 foreach문의 실행.
+            PlayAnimator();
+
+            SkillColi.enabled = true;
+
+            //StartCoroutine(MoveForwardByDiameter());
+
+            StartCoroutine(SwordEffectLoop());
         }
-    }
-
-    void OnCasting()
-    {
-        Wolfs.SetActive(true);
-
-        AfterEffectOn();
-
-        OnChangeMaterial();
-
-        isCasting = true;  // 애니메이션 시작 시 공격 상태로 전환
-
-        // 공격 애니메이션 트리거 실행
-        p_Anim.SetTrigger("BasicSkill");
-        // Wolfs의 애니메이션 foreach문의 실행.
-        PlayAnimator();
-
-        SkillColi.enabled = true;
-
-        //StartCoroutine(MoveForwardByDiameter());
-
-        StartCoroutine(SwordEffectLoop());
     }
 
     void OnTriggerEnter(Collider other)

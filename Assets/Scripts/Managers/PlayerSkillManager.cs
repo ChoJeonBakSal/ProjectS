@@ -6,6 +6,7 @@ public class PlayerSkillManager : MonoBehaviour
 {
     [Header("Player variable")]
     [SerializeField] private Animator p_Anim;
+    [SerializeField] private Rigidbody rb;
     [SerializeField] public bool isCasting = false; // 애니메이션 실행중 재입력 불가
 
 
@@ -49,27 +50,32 @@ public class PlayerSkillManager : MonoBehaviour
         skillCollider.enabled = false;
 
         swordTrailEffect.SetActive(false);
+
+        rb = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Mouse0) && !isCasting)
+    //    {
+    //        OnSkill();
+    //    }
+    //}
+
+    public void OnSkill()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !isCasting)
+        if (!isCasting)
         {
-            OnSkill();
+            swordTrailEffect.SetActive(true);
+
+            isCasting = true;  // 애니메이션 시작 시 공격 상태로 전환
+
+            //skillCollider.enabled = false;
+
+            // 공격 애니메이션 트리거 실행
+            p_Anim.SetTrigger("BasicSkill");
+            Time.timeScale = beforeSkillEffectDelayTimeScale;
         }
-    }
-
-    void OnSkill()
-    {
-        swordTrailEffect.SetActive(true);
-
-        isCasting = true;  // 애니메이션 시작 시 공격 상태로 전환
-
-        //skillCollider.enabled = false;
-
-        // 공격 애니메이션 트리거 실행
-        p_Anim.SetTrigger("BasicSkill");
-        Time.timeScale = beforeSkillEffectDelayTimeScale;
     }
 
     void OnTriggerEnter(Collider other)

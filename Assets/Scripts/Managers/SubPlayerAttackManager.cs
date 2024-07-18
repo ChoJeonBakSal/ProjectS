@@ -40,26 +40,29 @@ public class SubPlayerAttackManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)
+    //    {
+    //        OnAttack();
+    //    }
+    //}
+
+    public void OnAttack()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)
+        if (!isAttacking)
         {
-            OnAttack();
+            isAttacking = true;  // 애니메이션 시작 시 공격 상태로 전환
+
+            // 공격 애니메이션 트리거 실행
+            p_Anim.SetTrigger("BasicAtk");
+
+            biteColi.enabled = true;
+
+            //StartCoroutine(MoveForwardByDiameter());
+
+            StartCoroutine(SwordEffectLoop());
         }
-    }
-
-    void OnAttack()
-    {
-        isAttacking = true;  // 애니메이션 시작 시 공격 상태로 전환
-
-        // 공격 애니메이션 트리거 실행
-        p_Anim.SetTrigger("BasicAtk");
-
-        biteColi.enabled = true;
-
-        //StartCoroutine(MoveForwardByDiameter());
-
-        StartCoroutine(SwordEffectLoop());
     }
 
     void OnTriggerEnter(Collider other)

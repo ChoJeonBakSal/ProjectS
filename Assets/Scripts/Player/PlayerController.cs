@@ -4,6 +4,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Layer로 스킬 구분")]
+    [SerializeField] private GameObject playerCamera;
+    [SerializeField] private GameObject subPlayerCamera;
+
     [Header("Human Set")] // 휴먼                              [ 모든 값은 임의 설정 ]
     [SerializeField] float HumanrunSpeed = 5.0f;                   // 뛰기 속도
 
@@ -111,6 +115,15 @@ public class PlayerController : MonoBehaviour
     {
         playerInputActions.Player.Move.performed += OnMove;
         playerInputActions.Player.Move.canceled += OnMove;
+
+        // 인간 평타
+        playerInputActions.Player.BasicAtk.performed += OnBasicAtk;
+        playerInputActions.Player.BasicAtk.canceled += OnBasicAtk;
+
+        // 인간 스킬
+        playerInputActions.Player.BasicSkill.performed += OnBasicSkill;
+        playerInputActions.Player.BasicSkill.canceled += OnBasicSkill;
+
         //playerInputActions.Player.Look.performed += OnLook;
         //playerInputActions.Player.Look.canceled += OnLook;
         playerInputActions.Enable();
@@ -121,6 +134,15 @@ public class PlayerController : MonoBehaviour
     {
         playerInputActions.Player.Move.performed -= OnMove;
         playerInputActions.Player.Move.canceled -= OnMove;
+
+        // 인간 평타
+        playerInputActions.Player.BasicAtk.performed -= OnBasicAtk;
+        playerInputActions.Player.BasicAtk.canceled -= OnBasicAtk;
+
+        // 인간 스킬
+        playerInputActions.Player.BasicSkill.performed -= OnBasicSkill;
+        playerInputActions.Player.BasicSkill.canceled -= OnBasicSkill;
+
         //playerInputActions.Player.Look.performed -= OnLook;
         //playerInputActions.Player.Look.canceled -= OnLook;
         playerInputActions.Disable();
@@ -134,6 +156,49 @@ public class PlayerController : MonoBehaviour
         {
             isMoving = context.phase == InputActionPhase.Performed;
         }
+    }
+
+    private void OnBasicAtk(InputAction.CallbackContext context)
+    {
+        // playerCamera가 true       subPlayerCamera가 false 일때 인간 포커스
+        if (playerCamera.activeSelf && !subPlayerCamera.activeSelf)
+        {
+            Debug.Log("인간 공격");
+            PlayerAttackManager pam = GetComponent<PlayerAttackManager>();
+            PlayerSkillManager psm = GetComponent<PlayerSkillManager>();
+            if (!pam.isAttacking && !psm.isCasting)
+                pam.OnAttack();
+        }
+        else if (!playerCamera.activeSelf && subPlayerCamera.activeSelf)
+        {
+            Debug.Log("늑대 공격");
+            SubPlayerAttackManager sam = GetComponent<SubPlayerAttackManager>();
+            SubPlayerSkillManager ssm = GetComponent<SubPlayerSkillManager>();
+            if (!sam.isAttacking && !ssm.isCasting)
+                sam.OnAttack();
+        }
+
+    }
+
+    private void OnBasicSkill(InputAction.CallbackContext context)
+    {
+        if (playerCamera.activeSelf && !subPlayerCamera.activeSelf)
+        {
+            Debug.Log("인간 스킬 공격");
+            PlayerAttackManager pam = GetComponent<PlayerAttackManager>();
+            PlayerSkillManager psm = GetComponent<PlayerSkillManager>();
+            if(!pam.isAttacking && !psm.isCasting)
+                psm.OnSkill();
+        }
+        else if (!playerCamera.activeSelf && subPlayerCamera.activeSelf)
+        {
+            Debug.Log("늑대 스킬 공격");
+            SubPlayerAttackManager sam = GetComponent<SubPlayerAttackManager>();
+            SubPlayerSkillManager ssm = GetComponent<SubPlayerSkillManager>();
+            if (!sam.isAttacking && !ssm.isCasting)
+                ssm.OnCasting();
+        }
+
     }
 
     // 마우스 위치 입력 처리

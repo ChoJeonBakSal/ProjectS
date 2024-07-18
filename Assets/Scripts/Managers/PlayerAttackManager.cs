@@ -55,24 +55,27 @@ public class PlayerAttackManager : MonoBehaviour
         swordTrailEffect.SetActive(false);
     }
 
-    private void Update()
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)
+    //    {
+    //
+    //        OnAttack();
+    //    }
+    //}
+
+    public void OnAttack()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !isAttacking)
+        if (!isAttacking) 
         {
+            isAttacking = true;  // 애니메이션 시작 시 공격 상태로 전환
+            CharacterRotation();    //캐릭터가 마우스의 방향으로 회전
 
-            OnAttack();
+            // 공격 애니메이션 트리거 실행
+            p_Anim.SetTrigger("BasicAtk");
+            //swordColi.enabled = true;
+            StartCoroutine(SwordEffectLoop());        
         }
-    }
-
-    void OnAttack()
-    {
-        isAttacking = true;  // 애니메이션 시작 시 공격 상태로 전환
-        CharacterRotation();    //캐릭터가 마우스의 방향으로 회전
-
-        // 공격 애니메이션 트리거 실행
-        p_Anim.SetTrigger("BasicAtk");
-        //swordColi.enabled = true;
-        StartCoroutine(SwordEffectLoop());        
     }
 
     private void CharacterRotation()

@@ -62,6 +62,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BasicAtk"",
+                    ""type"": ""Button"",
+                    ""id"": ""9d09ab8f-761e-4fed-bb10-52c7c2936628"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BasicSkill"",
+                    ""type"": ""Button"",
+                    ""id"": ""9be07612-237c-494f-a79d-da7c1f3e2f09"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +170,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""PlayerChanged"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""502a0dc0-63a4-4185-94c5-6d48d2ca2fd1"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BasicAtk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""64d9126d-8c0e-4705-a3db-9eed436ae0e6"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BasicSkill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -176,6 +216,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Run = m_Player.FindAction("Run", throwIfNotFound: true);
         m_Player_PlayerChanged = m_Player.FindAction("PlayerChanged", throwIfNotFound: true);
+        m_Player_BasicAtk = m_Player.FindAction("BasicAtk", throwIfNotFound: true);
+        m_Player_BasicSkill = m_Player.FindAction("BasicSkill", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -241,6 +283,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Run;
     private readonly InputAction m_Player_PlayerChanged;
+    private readonly InputAction m_Player_BasicAtk;
+    private readonly InputAction m_Player_BasicSkill;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -249,6 +293,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Run => m_Wrapper.m_Player_Run;
         public InputAction @PlayerChanged => m_Wrapper.m_Player_PlayerChanged;
+        public InputAction @BasicAtk => m_Wrapper.m_Player_BasicAtk;
+        public InputAction @BasicSkill => m_Wrapper.m_Player_BasicSkill;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -270,6 +316,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PlayerChanged.started += instance.OnPlayerChanged;
             @PlayerChanged.performed += instance.OnPlayerChanged;
             @PlayerChanged.canceled += instance.OnPlayerChanged;
+            @BasicAtk.started += instance.OnBasicAtk;
+            @BasicAtk.performed += instance.OnBasicAtk;
+            @BasicAtk.canceled += instance.OnBasicAtk;
+            @BasicSkill.started += instance.OnBasicSkill;
+            @BasicSkill.performed += instance.OnBasicSkill;
+            @BasicSkill.canceled += instance.OnBasicSkill;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -286,6 +338,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PlayerChanged.started -= instance.OnPlayerChanged;
             @PlayerChanged.performed -= instance.OnPlayerChanged;
             @PlayerChanged.canceled -= instance.OnPlayerChanged;
+            @BasicAtk.started -= instance.OnBasicAtk;
+            @BasicAtk.performed -= instance.OnBasicAtk;
+            @BasicAtk.canceled -= instance.OnBasicAtk;
+            @BasicSkill.started -= instance.OnBasicSkill;
+            @BasicSkill.performed -= instance.OnBasicSkill;
+            @BasicSkill.canceled -= instance.OnBasicSkill;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -318,5 +376,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
         void OnPlayerChanged(InputAction.CallbackContext context);
+        void OnBasicAtk(InputAction.CallbackContext context);
+        void OnBasicSkill(InputAction.CallbackContext context);
     }
 }
