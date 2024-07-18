@@ -11,7 +11,6 @@ public class DBCharacterPC : MonoBehaviour
     public TextAsset _playersInfoDbFile;
     public TextAsset _normalAttackDBFile;
 
-    public List<string> TypeNameList = new List<string>();
     private static DBCharacterPC _instance;
     public static DBCharacterPC Instance
     {

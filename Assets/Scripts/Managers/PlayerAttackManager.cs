@@ -67,14 +67,23 @@ public class PlayerAttackManager : MonoBehaviour
     void OnAttack()
     {
         isAttacking = true;  // 애니메이션 시작 시 공격 상태로 전환
+        CharacterRotation();    //캐릭터가 마우스의 방향으로 회전
 
         // 공격 애니메이션 트리거 실행
         p_Anim.SetTrigger("BasicAtk");
-
         //swordColi.enabled = true;
+        StartCoroutine(SwordEffectLoop());        
+    }
 
-        StartCoroutine(SwordEffectLoop());
-        
+    private void CharacterRotation()
+    {
+        Vector3 mousePos = Input.mousePosition;
+        mousePos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, Camera.main.transform.position.y));
+
+        Vector3 direction = mousePos - transform.position;
+        float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+        transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
     }
 
     void OnTriggerEnter(Collider other)
