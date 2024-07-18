@@ -30,7 +30,7 @@ public class BossView : MonoBehaviour
     IBTNode SetMonsterBT()
     {
         var IdleNodeList = new List<IBTNode>();
-        IdleNodeList.Add(new MonsterActionNode());
+        IdleNodeList.Add(new MonsterActionNode(CheckFollowingRangeOnUpdate));
 
         List<IBTNode> rootSelectNode = new List<IBTNode>();
 
