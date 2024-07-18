@@ -166,8 +166,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 FollowTarget();
-            }
-            
+            }            
         }
         else
         {
