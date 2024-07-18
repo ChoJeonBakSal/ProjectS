@@ -45,7 +45,12 @@ public class DBCharacterPC : MonoBehaviour
         get { return _wolfHp; }
         set { _wolfHp = value; }
     }
- 
+
+    #endregion
+
+    #region Boss
+    public ParticleSystem BossDangerlineObj;
+    public Transform target;
     #endregion
     void Awake()
     {
@@ -67,6 +72,12 @@ public class DBCharacterPC : MonoBehaviour
     {
         SetData();
         mainUI.SetInitialValues(HumanHp, WolfHp, 0); // 초기값 설정, 궁극기는 0으로 시작
+        if (BossDangerlineObj != null) BossDangerlineObj.gameObject.SetActive(false);
+        target.TransformPoint(target.localPosition);
+        BossCircleParticlePlay(target.transform.position);
+
+
+
     }
     public class ItemData
     {
@@ -156,7 +167,7 @@ public class DBCharacterPC : MonoBehaviour
         }
     }
 
-    // TEST
+ /*   // TEST
     public void HmTakeDamageButton()
     {
         HitDamageHuman(5); // Assuming you want to take 5 damage for example
@@ -168,7 +179,7 @@ public class DBCharacterPC : MonoBehaviour
     public void AddSkillGaugeButton()
     {
         AddSkillGauge(5); // 예를 들어 5 만큼 스킬 게이지 증가
-    }
+    }*/
     // Human 에서 아래 함수 싱글턴 인스턴으 호출 시키면 체력 bar는 자동으로 감소 됨 return 값 활용해도 좋을 듯 죽는 모션 등등
     public float HitDamageHuman(float damage)
     {
@@ -262,7 +273,26 @@ public class DBCharacterPC : MonoBehaviour
         }
         else
         {
-            UltimateEffectObj.gameObject.SetActive(false);
+          //  이거 주석 다시 풀어놔야 함 UltimateEffectObj.gameObject.SetActive(false);
+        }
+    }
+    public void BossCircleParticlePlay(Vector3 loc)
+    {
+
+        if (BossDangerlineObj != null)
+        {
+            // 오브젝트 비활성화
+            BossDangerlineObj.gameObject.SetActive(false);
+
+            // 오브젝트 동작 중지
+            BossDangerlineObj.Stop();
+
+            BossDangerlineObj.transform.position = loc;
+            // 오브젝트 다시 활성화
+            BossDangerlineObj.gameObject.SetActive(true);
+
+            // 오브젝트 동작 재개
+            BossDangerlineObj.Play();
         }
     }
 }
