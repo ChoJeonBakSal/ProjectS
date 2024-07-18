@@ -50,7 +50,7 @@ public class DBCharacterPC : MonoBehaviour
 
     #region Boss
     public ParticleSystem BossDangerlineObj;
-    public Transform target;
+    //public Transform target;
     #endregion
     void Awake()
     {
@@ -73,8 +73,7 @@ public class DBCharacterPC : MonoBehaviour
         SetData();
         mainUI.SetInitialValues(HumanHp, WolfHp, 0); // 초기값 설정, 궁극기는 0으로 시작
         if (BossDangerlineObj != null) BossDangerlineObj.gameObject.SetActive(false);
-        target.TransformPoint(target.localPosition);
-        BossCircleParticlePlay(target.transform.position);
+      //  BossCircleParticlePlay(target.transform.position);
 
 
 
@@ -273,7 +272,7 @@ public class DBCharacterPC : MonoBehaviour
         }
         else
         {
-          //  이거 주석 다시 풀어놔야 함 UltimateEffectObj.gameObject.SetActive(false);
+          UltimateEffectObj.gameObject.SetActive(false);
         }
     }
     public void BossCircleParticlePlay(Vector3 loc)
@@ -287,6 +286,7 @@ public class DBCharacterPC : MonoBehaviour
             // 오브젝트 동작 중지
             BossDangerlineObj.Stop();
 
+            loc.y = .2f;
             BossDangerlineObj.transform.position = loc;
             // 오브젝트 다시 활성화
             BossDangerlineObj.gameObject.SetActive(true);
