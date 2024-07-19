@@ -33,7 +33,7 @@ public class MonsterAttackAnimationEnd : StateMachineBehaviour
             if (target.currentPlayerTag == "Human")
             {
                 float Diechk  = DBCharacterPC.Instance.HitDamageHuman(owner.AttackDamage);
-                if (Diechk <= 360)
+                if (Diechk <= 0)
                 {
     
                     //target.enabled = false;
@@ -51,7 +51,7 @@ public class MonsterAttackAnimationEnd : StateMachineBehaviour
             else
             {
                 float Diechk = DBCharacterPC.Instance.HitDamageWolf(owner.AttackDamage);
-                if (Diechk <= 360)
+                if (Diechk <= 0)
                 {
                     GameObject targethuman = GameObject.Find("Human");
                     targethuman.GetComponent<Animator>().SetTrigger("Dead");
