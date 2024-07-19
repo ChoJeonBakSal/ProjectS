@@ -31,6 +31,12 @@ public class SubPlayerAttackManager : MonoBehaviour
     [Header("Move Forward Timing")]
     [SerializeField] private float totalDistance; // 이동할 총 거리
     [SerializeField] private float moveForwardTime; // 이동 시간
+
+    [Header("Ultimate Gauge Charge")]
+    [SerializeField] private float _gaugeChargeValue;
+    [SerializeField] private int maxHitChargeEnemyNum;
+    [SerializeField] private int CounteHitEnemyNum;
+
     void Start()
     {
         // 타겟 레이어를 설정합니다. 예를 들어, 레이어 이름이 "Monster"라면:
@@ -80,10 +86,17 @@ public class SubPlayerAttackManager : MonoBehaviour
         {
             Debug.Log("Monster Collider와 충돌 감지!");
 
+            CounteHitEnemyNum++;
+            //Debug.Log($"Sub 맞은 Enemy 수 : {CounteHitEnemyNum}");
+
             // 여기서 충돌 처리를 합니다.
             MonsterView hitMonster = other.GetComponent<MonsterView>();
             if(hitMonster != null)
                 hitMonster.HurtDamage(hitDamage, transform);
+
+            //게이지 충전
+            //DBCharacterPC.Instance.AddSkillGauge(_gaugeChargeValue);
+
 
             StartCoroutine(HitEffectLoop(other));
             StartCoroutine(SlowMotionEffect());
@@ -175,4 +188,21 @@ public class SubPlayerAttackManager : MonoBehaviour
         transform.position = targetPosition;
     }
 
+    public void SubStartAnim_CountingEnemyNum()
+    {
+        CounteHitEnemyNum = 0;
+    }
+
+    public void SubEndAnim_CalculatingGauge()
+    {
+        if (CounteHitEnemyNum >= maxHitChargeEnemyNum)
+            CounteHitEnemyNum = maxHitChargeEnemyNum;
+
+        //게이지 충전
+        if (CounteHitEnemyNum > 0)
+            DBCharacterPC.Instance.AddSkillGauge((float)CounteHitEnemyNum * _gaugeChargeValue);
+
+        //Debug.Log($"Sub _gaugeChargeValue : {_gaugeChargeValue}");
+        //Debug.Log($"Sub Gauge 추가량 : {(float)CounteHitEnemyNum * _gaugeChargeValue}");
+    }
 }

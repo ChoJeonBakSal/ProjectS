@@ -1,6 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,6 +14,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject subPlayerCamera;
     [SerializeField] private GameObject UtimateSkillManagerObj;
     [SerializeField] private UtimateSkillManager UtimateSkillManager;
+
+    //[Header("Skill 중 플레이어 회전 통제 변수")]
+    //[SerializeField] private PlayerSkillManager psm;
+    //[SerializeField] private SubPlayerSkillManager ssm;
+    //[SerializeField] private bool wasCasting = false;
+    //[SerializeField] private Quaternion initialRotation;
 
     [Header("Human Set")] // 휴먼                              [ 모든 값은 임의 설정 ]
     [SerializeField] float HumanrunSpeed = 5.0f;                   // 뛰기 속도
@@ -200,22 +208,33 @@ public class PlayerController : MonoBehaviour
     {
         if (playerCamera.activeSelf && !subPlayerCamera.activeSelf)
         {
-            Debug.Log("인간 스킬 공격");
+
             PlayerAttackManager pam = GameObject.Find("Human").GetComponent<PlayerAttackManager>();
             PlayerSkillManager psm = GameObject.Find("Human").GetComponent<PlayerSkillManager>();
             if(!pam.isAttacking && !psm.isCasting)
+            {
+                Debug.Log("인간 스킬 공격");
                 psm.OnSkill();
+            }
         }
         else if (!playerCamera.activeSelf && subPlayerCamera.activeSelf)
         {
-            Debug.Log("늑대 스킬 공격");
+
             SubPlayerAttackManager sam = GameObject.Find("Wolf").GetComponent<SubPlayerAttackManager>();
             SubPlayerSkillManager ssm = GameObject.Find("Wolf").GetComponent<SubPlayerSkillManager>();
             if (!sam.isAttacking && !ssm.isCasting)
+            {
+                Debug.Log("늑대 스킬 공격");
                 ssm.OnCasting();
+            }
+            else
+            {
+                Debug.Log("서브 플레이어 스킬 쿨타임 중입니다.");
+            }
         }
-
     }
+
+
 
     void OnUltimateSkill(InputAction.CallbackContext context)
     {
@@ -281,7 +300,7 @@ public class PlayerController : MonoBehaviour
             CharacterRotation();
             MoveCharacter();
         }
-            UpdateAnimatorParameters();
+        UpdateAnimatorParameters();
     }
 
     private void CharacterRotation()
@@ -513,5 +532,4 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion
-
 }

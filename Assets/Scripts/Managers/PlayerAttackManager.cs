@@ -39,7 +39,11 @@ public class PlayerAttackManager : MonoBehaviour
     [SerializeField] private float swordSpawnScale = 1.0f;
 
     PlayerController playerinfo;
-    private float _gaugeChargeValue;
+
+    [Header("Ultimate Gauge Charge")]
+    [SerializeField] private float _gaugeChargeValue;
+    [SerializeField] private int maxHitChargeEnemyNum;
+    [SerializeField] private int CounteHitEnemyNum;
 
     private void Awake()
     {
@@ -101,6 +105,9 @@ public class PlayerAttackManager : MonoBehaviour
         {
             Debug.Log("Monster Collider와 충돌 감지!");
 
+            CounteHitEnemyNum++;
+            //Debug.Log($"맞은 Enemy 수 : {CounteHitEnemyNum}");
+
             // 여기서 충돌 처리를 합니다.
             MonsterView hitMonster = other.GetComponent<MonsterView>();
             hitMonster.HurtDamage(playerinfo.InitATk, transform);
@@ -108,7 +115,7 @@ public class PlayerAttackManager : MonoBehaviour
             Debug.LogWarning(playerinfo.InitATk);
 
             //게이지 충전
-            DBCharacterPC.Instance.AddSkillGauge(_gaugeChargeValue);
+            //DBCharacterPC.Instance.AddSkillGauge(_gaugeChargeValue);
 
             StartCoroutine(HitEffectLoop(other));
             StartCoroutine(SlowMotionEffect());
@@ -183,4 +190,20 @@ public class PlayerAttackManager : MonoBehaviour
         Destroy(effectPlayer);
     }
 
+    public void StartAnim_CountingEnemyNum()
+    {
+        CounteHitEnemyNum = 0;
+    }
+
+    public void EndAnim_CalculatingGauge()
+    {
+        if (CounteHitEnemyNum >= maxHitChargeEnemyNum)
+            CounteHitEnemyNum = maxHitChargeEnemyNum;
+
+        //게이지 충전
+        if(CounteHitEnemyNum > 0)
+            DBCharacterPC.Instance.AddSkillGauge((float)CounteHitEnemyNum * _gaugeChargeValue);
+
+        //Debug.Log($"Gauge 추가량 : {(float)CounteHitEnemyNum * _gaugeChargeValue}");
+    }
 }

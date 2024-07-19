@@ -45,9 +45,8 @@ public class MainUI : MonoBehaviour
         {
             DBCharacterPC.Instance.UltimateSkillEffectOnOff(false);
         }
-
-
     }
+
     public void AddSkillGauge(float amount)
     {
         _crtSkillGauge += amount;

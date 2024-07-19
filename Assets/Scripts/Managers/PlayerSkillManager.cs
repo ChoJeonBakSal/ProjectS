@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerSkillManager : MonoBehaviour
 {
+    [Header("Skill Cool Time 관련 변수")]
+    [SerializeField] private Image Skill_Icon_Human_CollTimeBar;
+    [SerializeField] private float playerSkillCoolTime;
+    [SerializeField] private bool isPlayerSkillReady = true;
+
     [Header("Skill Damage")]
     [SerializeField] private float skillDamage = 60f;
 
@@ -11,7 +17,6 @@ public class PlayerSkillManager : MonoBehaviour
     [SerializeField] private Animator p_Anim;
     [SerializeField] private Rigidbody rb;
     [SerializeField] public bool isCasting = false; // 애니메이션 실행중 재입력 불가
-
 
     [Header("Hit Effect")]
     [SerializeField] private SphereCollider skillCollider;
@@ -43,6 +48,10 @@ public class PlayerSkillManager : MonoBehaviour
     private bool disableSound = true;
     [SerializeField] private float swordSpawnScale = 1.0f;
 
+    [Header("Ultimate Gauge Charge")]
+    [SerializeField] private float _gaugeChargeValue;
+    [SerializeField] private int maxHitChargeEnemyNum;
+    [SerializeField] private int CounteHitEnemyNum;
 
     void Start()
     {
@@ -57,18 +66,12 @@ public class PlayerSkillManager : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    //private void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Mouse0) && !isCasting)
-    //    {
-    //        OnSkill();
-    //    }
-    //}
-
     public void OnSkill()
     {
-        if (!isCasting)
+        if (!isCasting && isPlayerSkillReady)
         {
+            StartCoroutine(PlayerSkillCooldown());
+
             swordTrailEffect.SetActive(true);
 
             isCasting = true;  // 애니메이션 시작 시 공격 상태로 전환
@@ -80,6 +83,23 @@ public class PlayerSkillManager : MonoBehaviour
             Time.timeScale = beforeSkillEffectDelayTimeScale;
         }
     }
+    IEnumerator PlayerSkillCooldown()
+    {
+        isPlayerSkillReady = false;
+        Skill_Icon_Human_CollTimeBar.fillAmount = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < playerSkillCoolTime)
+        {
+            elapsedTime += Time.deltaTime;
+            Skill_Icon_Human_CollTimeBar.fillAmount = elapsedTime / playerSkillCoolTime;
+            yield return null;
+        }
+
+        Skill_Icon_Human_CollTimeBar.fillAmount = 1f;
+        isPlayerSkillReady = true;
+        Debug.Log("플레이어 스킬이 다시 준비되었습니다.");
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -88,6 +108,9 @@ public class PlayerSkillManager : MonoBehaviour
         if (other.gameObject.layer == targetLayer && !pam.isAttacking)
         {
             Debug.Log("Monster Collider와 충돌 감지!");
+
+            CounteHitEnemyNum++;
+            Debug.Log($"맞은 Enemy 수 : {CounteHitEnemyNum}");
 
             // 여기서 충돌 처리를 합니다.
             MonsterView hitMonster = other.GetComponent<MonsterView>();
@@ -176,5 +199,22 @@ public class PlayerSkillManager : MonoBehaviour
         StartCoroutine(SkillEffectLoop());
         yield return new WaitForSeconds(0.1f);
         skillCollider.enabled = false;
+    }
+
+    public void PlayerSkillStartAnim_CountingEnemyNum()
+    {
+        CounteHitEnemyNum = 0;
+    }
+
+    public void PlayerSkillEndAnim_CalculatingGauge()
+    {
+        if (CounteHitEnemyNum >= maxHitChargeEnemyNum)
+            CounteHitEnemyNum = maxHitChargeEnemyNum;
+
+        //게이지 충전
+        if (CounteHitEnemyNum > 0)
+            DBCharacterPC.Instance.AddSkillGauge((float)CounteHitEnemyNum * _gaugeChargeValue);
+
+        Debug.Log($"Gauge 추가량 : {(float)CounteHitEnemyNum * _gaugeChargeValue}");
     }
 }

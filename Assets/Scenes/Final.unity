@@ -537,6 +537,9 @@ MonoBehaviour:
   biteTrailEffect: {fileID: 5919979354808700204, guid: c41e7ec3b5778b04ebdba82108337f97, type: 3}
   totalDistance: 0
   moveForwardTime: 0
+  _gaugeChargeValue: 0
+  maxHitChargeEnemyNum: 0
+  CounteHitEnemyNum: 0
 --- !u!65 &185940765
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12358,6 +12361,9 @@ MonoBehaviour:
   swordLoopTimeLimit: 2
   swordEffectDelayTime: 1
   swordSpawnScale: 1
+  _gaugeChargeValue: 4
+  maxHitChargeEnemyNum: 3
+  CounteHitEnemyNum: 0
 --- !u!114 &1592302161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12412,6 +12418,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 649db8ebe6b6122488d17e6e6f46a3d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Skill_Icon_Human_CollTimeBar: {fileID: 2687250459647798383}
+  playerSkillCoolTime: 10
+  isPlayerSkillReady: 1
   skillDamage: 60
   p_Anim: {fileID: 1592302153}
   rb: {fileID: 0}
@@ -12431,6 +12440,9 @@ MonoBehaviour:
   swordLoopTimeLimit: 2
   skillEffectDelayTime: 0.2
   swordSpawnScale: 1
+  _gaugeChargeValue: 20
+  maxHitChargeEnemyNum: 1
+  CounteHitEnemyNum: 0
 --- !u!1 &1596781474
 GameObject:
   m_ObjectHideFlags: 0
@@ -15952,9 +15964,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 465129725647236531, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 631024223070101484, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
       propertyPath: m_Name
       value: MainUI_V1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1362689762779444369, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ef0e3d5b6141f6e43b558d11ca6c2a27, type: 3}
+    - target: {fileID: 1362689762779444369, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1362689762779444369, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3297936601864816758, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
       propertyPath: m_Camera
@@ -15963,6 +15991,22 @@ PrefabInstance:
     - target: {fileID: 3297936601864816758, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
       propertyPath: m_RenderMode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699057476352669924, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1c04e736e13491e4ea0717c1e949f610, type: 3}
+    - target: {fileID: 4699057476352669924, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699057476352669924, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4877588858286954325, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+      propertyPath: m_Sprite
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6893086873880180892, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
       propertyPath: UltimateEffectObj
@@ -16057,6 +16101,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+--- !u!114 &2687250459647798382 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1362689762779444369, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+  m_PrefabInstance: {fileID: 2687250459647798381}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2687250459647798383 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4699057476352669924, guid: 40d70d53d8c17ea4c9a06302283937b3, type: 3}
+  m_PrefabInstance: {fileID: 2687250459647798381}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2746322459205435219
 GameObject:
   m_ObjectHideFlags: 0
@@ -18184,6 +18250,9 @@ MonoBehaviour:
   biteTrailEffect: {fileID: 1157789113}
   totalDistance: 6
   moveForwardTime: 0.4
+  _gaugeChargeValue: 2
+  maxHitChargeEnemyNum: 3
+  CounteHitEnemyNum: 0
 --- !u!114 &8447959458162184741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18196,6 +18265,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61e5861dc4b4cf54ca04cec6a13e6683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Skill_Icon_Wolf_CollTimeBar: {fileID: 2687250459647798382}
+  subPlayerSkillCoolTime: 10
+  isSubPlayerSkillReady: 1
   skillDamage: 0
   Wolfs: {fileID: 1255402728}
   wolfs_Anims:
@@ -18224,6 +18296,9 @@ MonoBehaviour:
   moveForwardTime: 0.4
   ori_Material: {fileID: 2100000, guid: eeeb277b5b6ae124e9d44bebda8b1f0f, type: 2}
   effect_Material: {fileID: 2100000, guid: 52c061c56005d064eb2c038afcdb7c1d, type: 2}
+  _gaugeChargeValue: 20
+  maxHitChargeEnemyNum: 1
+  CounteHitEnemyNum: 0
 --- !u!4 &8452645521626845646
 Transform:
   m_ObjectHideFlags: 0

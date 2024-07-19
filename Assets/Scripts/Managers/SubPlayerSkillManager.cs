@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SubPlayerSkillManager : MonoBehaviour
 {
+    [Header("Skill Cool Time 관련 변수")]
+    [SerializeField] private Image Skill_Icon_Wolf_CollTimeBar;
+    [SerializeField] private float subPlayerSkillCoolTime;
+    [SerializeField] private bool isSubPlayerSkillReady = true;
+
     [Header("Skill Damage")]
     [SerializeField] private float skillDamage = 60f;
 
@@ -42,6 +48,10 @@ public class SubPlayerSkillManager : MonoBehaviour
     [SerializeField] private Material ori_Material;
     [SerializeField] private Material effect_Material;
 
+    [Header("Ultimate Gauge Charge")]
+    [SerializeField] private float _gaugeChargeValue;
+    [SerializeField] private int maxHitChargeEnemyNum;
+    [SerializeField] private int CounteHitEnemyNum;
     void Start()
     {
         // 타겟 레이어를 설정합니다. 예를 들어, 레이어 이름이 "Monster"라면:
@@ -57,19 +67,12 @@ public class SubPlayerSkillManager : MonoBehaviour
         AfterEffectOff();
     }
 
-    // Update is called once per frame
-    //private void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Mouse0) && !isCasting)
-    //    {
-    //        OnCasting();
-    //    }
-    //}
-
     public void OnCasting()
     {
-        if (!isCasting) 
+        if (!isCasting && isSubPlayerSkillReady) 
         {
+            StartCoroutine(SubPlayerSkillCooldown());
+
             Wolfs.SetActive(true);
 
             AfterEffectOn();
@@ -91,6 +94,24 @@ public class SubPlayerSkillManager : MonoBehaviour
         }
     }
 
+    IEnumerator SubPlayerSkillCooldown()
+    {
+        isSubPlayerSkillReady = false;
+        Skill_Icon_Wolf_CollTimeBar.fillAmount = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < subPlayerSkillCoolTime)
+        {
+            elapsedTime += Time.deltaTime;
+            Skill_Icon_Wolf_CollTimeBar.fillAmount = elapsedTime / subPlayerSkillCoolTime;
+            yield return null;
+        }
+
+        Skill_Icon_Wolf_CollTimeBar.fillAmount = 1f;
+        isSubPlayerSkillReady = true;
+        Debug.Log("서브 플레이어 스킬이 다시 준비되었습니다.");
+    }
+
     void OnTriggerEnter(Collider other)
     {
         SubPlayerAttackManager psm = transform.GetComponent<SubPlayerAttackManager>();
@@ -99,6 +120,9 @@ public class SubPlayerSkillManager : MonoBehaviour
         if (other.gameObject.layer == targetLayer && !psm.isAttacking)
         {
             Debug.Log("Monster Collider와 충돌 감지!");
+
+            CounteHitEnemyNum++;
+            Debug.Log($"Sub 맞은 Enemy 수 : {CounteHitEnemyNum}");
 
             // 여기서 충돌 처리를 합니다.
             MonsterView hitMonster = other.GetComponent<MonsterView>();
@@ -246,5 +270,22 @@ public class SubPlayerSkillManager : MonoBehaviour
         {
             renderer.material = ori_Material;
         }
+    }
+
+    public void SubPlayerSkillStartAnim_CountingEnemyNum()
+    {
+        CounteHitEnemyNum = 0;
+    }
+
+    public void SubPlayerSkillEndAnim_CalculatingGauge()
+    {
+        if (CounteHitEnemyNum >= maxHitChargeEnemyNum)
+            CounteHitEnemyNum = maxHitChargeEnemyNum;
+
+        //게이지 충전
+        if (CounteHitEnemyNum > 0)
+            DBCharacterPC.Instance.AddSkillGauge((float)CounteHitEnemyNum * _gaugeChargeValue);
+
+        Debug.Log($"Sub Gauge 추가량 : {(float)CounteHitEnemyNum * _gaugeChargeValue}");
     }
 }
