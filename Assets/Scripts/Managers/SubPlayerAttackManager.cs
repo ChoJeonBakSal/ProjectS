@@ -69,9 +69,20 @@ public class SubPlayerAttackManager : MonoBehaviour
             biteColi.enabled = true;
 
             //StartCoroutine(MoveForwardByDiameter());
-
+            CharacterRotation();
             StartCoroutine(SwordEffectLoop());
         }
+    }
+
+    private void CharacterRotation()
+    {
+        Vector3 mousePos = Input.mousePosition;
+        mousePos = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, Camera.main.transform.position.y));
+
+        Vector3 direction = mousePos - transform.position;
+        float angle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+
+        transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
     }
 
     void OnTriggerEnter(Collider other)
